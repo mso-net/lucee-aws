@@ -1,5 +1,7 @@
 language: java
 sudo: required
+jdk:
+- oraclejdk8
 before_install:
 - echo "deb http://downloads.ortussolutions.com/debs/noarch /" > commandbox.list
 - sudo mv commandbox.list /etc/apt/sources.list.d/commandbox.list
