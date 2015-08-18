@@ -18,3 +18,5 @@ s3.getObject( 'path/to/something.ext' );
 s3.putObject( 'path/to/something.ext' , 'data:image/png;base64,data_base64_encoded_here' );
 s3.deleteObject( 'path/to/something.ext' );
 ```
+
+Travis skeleton based on https://github.com/DominicWatson/travis-testbox-skeleton
