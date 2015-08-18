@@ -11,6 +11,28 @@ component {
 		]
 	};
 
+	public boolean function onApplicationStart() {
+
+		var env = CreateObject( 'java' , 'java.lang.System' ).getenv();
+
+		application.aws_settings = {
+			'aws_accountid': '',
+			'aws_secretkey': '',
+			's3_bucket': '',
+			'dynamodb_table': ''
+		};
+
+		for( key in env ) {
+			if (
+				StructKeyExists( application.aws_settings , key )
+			) {
+				application.aws_settings[ key ] = env[ key ];
+			}
+		}
+
+		return true;
+	}
+
 	public void function onRequest( required string requestedTemplate ) {
 		include template=arguments.requestedTemplate;
 	}

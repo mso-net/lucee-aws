@@ -6,8 +6,8 @@ component extends='testbox.system.BaseSpec' {
 
 			beforeEach( function( currentSpec ) {
 				service = new aws.dynamodb(
-					account = 'account_id',
-					secret = 'secret',
+					account = application.aws_settings.aws_accountid,
+					secret = application.aws_settings.aws_secretkey,
 					region = 'eu-west-1'
 				);
 			});
@@ -61,7 +61,7 @@ component extends='testbox.system.BaseSpec' {
 				it( 'can get a table' , function() {
 
 					actual = service.getTable(
-						'dynamodb-table-name'
+						application.aws_settings.dynamodb_table
 					);
 
 					expect( 
@@ -94,7 +94,7 @@ component extends='testbox.system.BaseSpec' {
 					expect( before ).toBe( {} );
 
 					service.getTable(
-						'dynamodb-table-name'
+						application.aws_settings.dynamodb_table
 					);
 
 					actual = service.getTables();
@@ -102,11 +102,11 @@ component extends='testbox.system.BaseSpec' {
 					expect( 
 						actual 
 					).toHaveKey(
-						'dynamodb-table-name'
+						application.aws_settings.dynamodb_table
 					);
 
 					expect( 
-						actual['dynamodb-table-name']
+						actual[application.aws_settings.dynamodb_table]
 					).toBeInstanceOf(
 						'com.amazonaws.services.dynamodbv2.document.Table'
 					);
@@ -121,7 +121,7 @@ component extends='testbox.system.BaseSpec' {
 				it( 'can get the expected structure for the mso test environment' , function() {
 
 					actual = service.getItem(
-						table = 'dynamodb-table-name',
+						table = application.aws_settings.dynamodb_table,
 						key = 'domain',
 						value = 'www.mso.net'
 					);
@@ -138,7 +138,7 @@ component extends='testbox.system.BaseSpec' {
 				it( 'can get a structure for the mso base config' , function() {
 
 					actual = service.getItem(
-						table = 'dynamodb-table-name',
+						table = application.aws_settings.dynamodb_table,
 						key = 'id',
 						value = 'mso',
 						key2 = 'environment',
@@ -157,7 +157,7 @@ component extends='testbox.system.BaseSpec' {
 					expect( function() {
 
 						service.getItem(
-							table = 'dynamodb-table-name',
+							table = application.aws_settings.dynamodb_table,
 							key = 'domain',
 							value = GetTickCount()
 						);

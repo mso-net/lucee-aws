@@ -6,9 +6,9 @@ component extends='testbox.system.BaseSpec' {
 
 			beforeEach( function( currentSpec ) {
 				service = new aws.s3(
-					account = 'account_id',
-					secret = 'secret',
-					bucket = 'bucket',
+					account = application.aws_settings.aws_accountid,
+					secret = application.aws_settings.aws_secretkey,
+					bucket = application.aws_settings.s3_bucket,
 					basepath = 'unittest/'
 				);
 			});
