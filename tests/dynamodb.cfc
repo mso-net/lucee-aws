@@ -118,35 +118,25 @@ component extends='testbox.system.BaseSpec' {
 
 			describe( 'getItem()' , function() {
 
-				it( 'can get the expected structure for the mso test environment' , function() {
+
+				it( 'can get a structure using a hash+range lookup' , function() {
 
 					actual = service.getItem(
 						table = application.aws_settings.dynamodb_table,
-						key = 'domain',
-						value = 'www.mso.net'
+						key = 'key1',
+						value = 'hobo',
+						key2 = 'key2',
+						value2 = 'bot'
 					);
 
 					expected = {
-						'domain': 'www.mso.net',
-						'environment': 'test'
+						'key1': 'hobo',
+						'key2': 'bot',
+						'company': 'strayegg',
+						'lego': true
 					};
 
 					expect ( actual ).toBe( expected );
-
-				});
-
-				it( 'can get a structure for the mso base config' , function() {
-
-					actual = service.getItem(
-						table = application.aws_settings.dynamodb_table,
-						key = 'id',
-						value = 'mso',
-						key2 = 'environment',
-						value2 = 'base'
-					);
-					
-					expect ( actual.id ).toBe( 'mso' );
-					expect( actual.environment ).toBe( 'base' );
 
 				});
 
@@ -158,7 +148,7 @@ component extends='testbox.system.BaseSpec' {
 
 						service.getItem(
 							table = application.aws_settings.dynamodb_table,
-							key = 'domain',
+							key = 'company',
 							value = GetTickCount()
 						);
 
