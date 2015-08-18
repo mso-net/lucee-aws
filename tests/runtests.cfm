@@ -8,7 +8,9 @@
 		testbox  = new testbox.system.TestBox( options={}, reporter=reporter, directory={
 			  recurse  = true
 			, mapping  = "tests"
-			, filter   = function( required path ){ return true; }
+			, filter   = function( required path ){ 
+				return ( ListLast( arguments.path , '/' ) != 'Application.cfc' );
+			}
 		} );
 		echo( testbox.run() );
 		resultObject = testbox.getResult();

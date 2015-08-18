@@ -4,6 +4,7 @@
     "version":"0.1.0",
     "author":"Simon Hooker",
     "private":false,
+    "packageDirectory":"aws",
     "license":[
         {
             "type":"LGPL-2.1",
@@ -20,9 +21,16 @@
         "testbox":"2.0.0"
     },
     "installPaths":{
-        "testbox":"tests\\testbox"
+        "testbox":"testbox"
     },
     "dependencies":{
-        "testbox":"2.0.0"
-    }
+        
+    },
+    "ignore":[
+        "/tests/",
+        "/testbox/",
+        "/test",
+        "/.gitignore",
+        "/.travis.yml"
+    ]
 }
