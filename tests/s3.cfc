@@ -2,7 +2,7 @@ component extends='testbox.system.BaseSpec' {
 
 	function run() {
 
-		describe( 'aws.s3' , function() {
+		describe( 's3' , function() {
 
 			beforeEach( function( currentSpec ) {
 				service = new aws.s3(

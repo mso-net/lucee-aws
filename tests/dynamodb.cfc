@@ -2,7 +2,7 @@ component extends='testbox.system.BaseSpec' {
 
 	function run() {
 
-		describe( 'aws.dynamodb' , function() {
+		describe( 'dynamodb' , function() {
 
 			beforeEach( function( currentSpec ) {
 				service = new aws.dynamodb(
@@ -12,7 +12,7 @@ component extends='testbox.system.BaseSpec' {
 				);
 			});
 
-			it( 'extends awsSDK' , function() {
+			it( 'extends aws' , function() {
 
 				expect( 
 					service
