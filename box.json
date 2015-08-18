@@ -20,6 +20,9 @@
         "testbox":"2.0.0"
     },
     "installPaths":{
-        "testbox":"tests/testbox"
+        "testbox":"tests\\testbox"
+    },
+    "dependencies":{
+        "testbox":"2.0.0"
     }
 }

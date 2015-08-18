@@ -1,4 +1,4 @@
-component extends='tests.utility.unitTest' {
+component extends='testbox.system.BaseSpec' {
 
 	function run() {
 
