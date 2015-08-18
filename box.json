@@ -1,0 +1,25 @@
+{
+    "name":"Lucee AWS",
+    "slug":"lucee-aws",
+    "version":"0.0.1",
+    "author":"Simon Hooker",
+    "private":false,
+    "license":[
+        {
+            "type":"LGPL-2.1",
+            "url":"http://opensource.org/licenses/LGPL-2.1"
+        }
+    ],
+    "engines":[
+        {
+            "type":"lucee",
+            "version":">=4.5.x"
+        }
+    ],
+    "devDependencies":{
+        "testbox":"2.0.0"
+    },
+    "installPaths":{
+        "testbox":"tests/testbox"
+    }
+}
