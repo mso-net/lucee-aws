@@ -19,4 +19,4 @@ s3.putObject( 'path/to/something.ext' , 'data:image/png;base64,data_base64_encod
 s3.deleteObject( 'path/to/something.ext' );
 ```
 
-Travis skeleton based on https://github.com/DominicWatson/travis-testbox-skeleton
+Travis skeleton based on [DominicWatson/travis-testbox-skeleton](https://github.com/DominicWatson/travis-testbox-skeleton)
