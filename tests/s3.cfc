@@ -6,9 +6,9 @@ component extends='testbox.system.BaseSpec' {
 
 			beforeEach( function( currentSpec ) {
 				service = new aws.s3(
-					account = 'account_id',
-					secret = 'secret',
-					bucket = 'bucket',
+					account = application.aws_settings.aws_accountid,
+					secret = application.aws_settings.aws_secretkey,
+					bucket = application.aws_settings.s3_bucket,
 					basepath = 'unittest/'
 				);
 			});
@@ -134,7 +134,7 @@ component extends='testbox.system.BaseSpec' {
 			describe( 'makeDirectory() and deleteObject()' , function() {
 
 				it( 'makes a new random directory and deletes it' , function() {
-
+					
 					new_directory = CreateUUID();
 
 					expect(
@@ -239,7 +239,7 @@ component extends='testbox.system.BaseSpec' {
 					expect( actual.metadata ).toHaveKey( 'length' );
 					expect( actual.metadata ).toHaveKey( 'type' );
 
-					expect( actual.metadata.length ).toBe( 28088 );
+					expect( actual.metadata.length ).toBe( 10930 );
 					expect( actual.metadata.type ).toBe( 'image/png' );
 
 					expect( actual.content ).notToHaveLength( 0 );

@@ -6,8 +6,8 @@ component extends='testbox.system.BaseSpec' {
 
 			beforeEach( function( currentSpec ) {
 				service = new aws.aws(
-					account = 'account_id',
-					secret = 'secret'
+					account = application.aws_settings.aws_accountid,
+					secret = application.aws_settings.aws_secretkey
 				);
 			});
 

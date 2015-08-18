@@ -4,10 +4,25 @@
 
 Lucee extension to provide simpler access to common AWS commands through the AWS SDK
 
-At present the cfcs are available in /src/, once they have been cleaned up and organised properly then proper examples will follow.
+## Installation
 
-To use these you will need to have installed the AWS Java SDK, jars available from [http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip](http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip)
+The easiest way to install this at present is to use CommandBox.  To install with CommandBox 2.1+ simply do the following.
 
+1. `box install mso-net/lucee-aws --production`
+2. Add the following to your Application.cfc
+```
+this.javaSettings = {
+    loadPaths: [
+        '/aws/aws-java-sdk/'
+    ]
+};
+```
+
+The contents of /aws-java-sdk are just the jar files from [http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip](http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip).  I am looking for a better way of handling this dependency but for now I'm concentrating on other tasks.
+
+## Usage
+
+### S3
 Example for S3
 
 ```
@@ -21,5 +36,3 @@ s3.getObject( 'path/to/something.ext' );
 s3.putObject( 'path/to/something.ext' , 'data:image/png;base64,data_base64_encoded_here' );
 s3.deleteObject( 'path/to/something.ext' );
 ```
-
-Travis skeleton based on [DominicWatson/travis-testbox-skeleton](https://github.com/DominicWatson/travis-testbox-skeleton)
