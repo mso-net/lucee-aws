@@ -1,4 +1,7 @@
 # lucee-aws
+
+[![Build Status](https://travis-ci.org/mso-net/lucee-aws.svg?branch=master)](https://travis-ci.org/mso-net/lucee-aws)
+
 Lucee extension to provide simpler access to common AWS commands through the AWS SDK
 
 At present the cfcs are available in /src/aws/, once they have been cleaned up and organised properly then proper examples will follow.
