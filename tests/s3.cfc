@@ -31,8 +31,8 @@ component extends='testbox.system.BaseSpec' {
 				actual = service.getS3Client();
 
 				expect(
-					actual
-				).toBeInstanceOf(
+					actual.getClass().getName()
+				).toBe(
 					'com.amazonaws.services.s3.AmazonS3Client'
 				);
 
@@ -71,7 +71,9 @@ component extends='testbox.system.BaseSpec' {
 
 					actual = service.getBucketACL();
 
-					expect( actual ).toBeInstanceOf(
+					expect(
+						actual.getClass().getName()
+					).toBe(
 						'com.amazonaws.services.s3.model.AccessControlList'
 					);
 
@@ -93,7 +95,9 @@ component extends='testbox.system.BaseSpec' {
 						key = 'logo.png'
 					);
 
-					expect( actual ).toBeInstanceOf(
+					expect(
+						actual.getClass().getName()
+					).toBe(
 						'com.amazonaws.services.s3.model.ObjectMetadata'
 					);
 

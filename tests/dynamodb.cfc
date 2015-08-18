@@ -30,8 +30,8 @@ component extends='testbox.system.BaseSpec' {
 				actual = service.getDynamodbClient();
 
 				expect(
-					actual
-				).toBeInstanceOf(
+					actual.getClass().getName()
+				).toBe(
 					'com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient'
 				);
 
@@ -45,8 +45,8 @@ component extends='testbox.system.BaseSpec' {
 				actual = service.getDynamodb();
 
 				expect(
-					actual
-				).toBeInstanceOf(
+					actual.getClass().getName()
+				).toBe(
 					'com.amazonaws.services.dynamodbv2.document.DynamoDB'
 				);
 
@@ -64,9 +64,9 @@ component extends='testbox.system.BaseSpec' {
 						application.aws_settings.dynamodb_table
 					);
 
-					expect( 
-						actual 
-					).toBeInstanceOf(
+					expect(
+						actual.getClass().getName()
+					).toBe(
 						'com.amazonaws.services.dynamodbv2.document.Table'
 					);
 				});
@@ -80,7 +80,7 @@ component extends='testbox.system.BaseSpec' {
 						);
 
 					}).toThrow(
-						'com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException'
+					
 					);
 
 				});
@@ -105,9 +105,9 @@ component extends='testbox.system.BaseSpec' {
 						application.aws_settings.dynamodb_table
 					);
 
-					expect( 
-						actual[application.aws_settings.dynamodb_table]
-					).toBeInstanceOf(
+					expect(
+						actual[application.aws_settings.dynamodb_table].getClass().getName()
+					).toBe(
 						'com.amazonaws.services.dynamodbv2.document.Table'
 					);
 
