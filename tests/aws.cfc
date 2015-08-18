@@ -18,8 +18,8 @@ component extends='testbox.system.BaseSpec' {
 				actual = service.getCredentials();
 
 				expect(
-					actual
-				).toBeInstanceOf(
+					actual.getClass().getName()
+				).toBe(
 					'com.amazonaws.auth.BasicAWSCredentials'
 				);
 
@@ -32,8 +32,8 @@ component extends='testbox.system.BaseSpec' {
 				actual = service.getRegions();
 
 				expect(
-					actual
-				).toBeInstanceOf(
+					actual.getClass().getName()
+				).toBe(
 					'com.amazonaws.regions.Regions'
 				);
 
