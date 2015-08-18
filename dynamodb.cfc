@@ -143,8 +143,8 @@ component accessors=true extends='aws' {
 		var results = table.scan(
 			arguments.filterExpression,
 			arguments.projectionExpression,
-			arguments.nameMap ?: NullValue(),
-			arguments.valueMap ?: NullValue()
+			arguments.nameMap ?: JavaCast( 'null' , 0 ),
+			arguments.valueMap ?: JavaCast( 'null' , 0 )
 		).iterator();
 
 		var rendered_results = [];
