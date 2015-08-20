@@ -66,7 +66,7 @@ component extends='testbox.system.BaseSpec' {
 			});
 
 			describe( 'linkSubdomainToELB() and deleteSubdomain()' , function() {
-				
+
 				beforeEach( function() {
 
 					makePublic( service , 'isSubdomainAlreadyDefined' , 'isSubdomainAlreadyDefined' );
@@ -76,15 +76,15 @@ component extends='testbox.system.BaseSpec' {
 				it( 'can alias a subdomain using supplied hostedZoneID and ELB target and then delete it' , function() {
 
 					example_subdomain = generateSubdomainName( CreateUUID() );
- 
+
 					expect(
 						service.isSubdomainAlreadyDefined( example_subdomain )
 					).toBeFalse();
 
 					service.linkSubdomainToELB(
 						subdomain = example_subdomain,
-						hostedZoneID = application.aws_settings.route53_alias_hostedzoneid,
-						target = application.aws_settings.route53_alias_target
+						targetELBHostedZoneID = application.aws_settings.route53_alias_hostedzoneid,
+						targetELB = application.aws_settings.route53_alias_target
 					);
 
 					expect(

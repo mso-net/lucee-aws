@@ -31,10 +31,81 @@ component accessors=true extends='aws' {
 
 	public route53 function linkSubdomainToELB(
 		required string subdomain,
-		required string hostedZoneID,
-		required string target
+		required string targetELBHostedZoneID,
+		required string targetELB
 	) {
 
+		var full_domain = arguments.subdomain;
+		var sub_domain = ListFirst( full_domain , '.' );
+		var tl_domain = ListDeleteAt( full_domain , 1 , '.' );
+
+		var route53 = getRoute53Client();
+
+		var found_hosted_zone = false;
+		for( var hosted_zone in route53.listHostedZones().HostedZones ) {
+			if (
+				hosted_zone.Name == tl_domain&'.'
+			) {
+				found_hosted_zone = true;
+				break;
+			}
+		}
+
+		if ( 
+			!found_hosted_zone
+		) {
+			throw('Unable to find hosted zone for domain '&tl_domain);
+		}
+
+		var hosted_zone_id = hosted_zone.Id;
+
+		var resource_record_set = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ResourceRecordSet'
+		).init(
+			full_domain&'.',
+			'A'
+		);
+
+		var alias_target = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.AliasTarget'
+		).init(
+			arguments.targetELBHostedZoneID,
+			arguments.targetELB
+		);
+
+		alias_target.setEvaluateTargetHealth( false );
+		resource_record_set.setAliasTarget( alias_target );
+
+		var change = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.Change'
+		).init(
+			'UPSERT',
+			resource_record_set
+		);
+
+		var change_batch = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ChangeBatch'
+		).init(
+			[
+				change
+			]
+		);
+
+		var change_resource_record_sets_request = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest'
+		).init(
+			hosted_zone_id,
+			change_batch
+		);
+
+		route53.changeResourceRecordSets(
+			change_resource_record_sets_request
+		);
 		
 		return this;
 	}
