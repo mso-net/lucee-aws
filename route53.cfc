@@ -25,5 +25,27 @@ component accessors=true extends='aws' {
 		return variables.route53Client;
 	}
 
+	private boolean function isSubdomainAlreadyDefined() {
+		return false;
+	}
+
+	public route53 function linkSubdomainToELB(
+		required string subdomain,
+		required string hostedZoneID,
+		required string target
+	) {
+
+		
+		return this;
+	}
+
+	public route53 function deleteSubdomain(
+		required string subdomain
+	) {
+
+		
+		return this;
+	}
+
 
 }

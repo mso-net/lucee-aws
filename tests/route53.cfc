@@ -66,6 +66,12 @@ component extends='testbox.system.BaseSpec' {
 			});
 
 			describe( 'linkSubdomainToELB() and deleteSubdomain()' , function() {
+				
+				beforeEach( function() {
+
+					makePublic( service , 'isSubdomainAlreadyDefined' , 'isSubdomainAlreadyDefined' );
+
+				});
 
 				it( 'can alias a subdomain using supplied hostedZoneID and ELB target and then delete it' , function() {
 
