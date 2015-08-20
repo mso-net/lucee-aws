@@ -36,7 +36,4 @@ component {
 		return true;
 	}
 
-	public void function onRequest( required string requestedTemplate ) {
-		include template=arguments.requestedTemplate;
-	}
 }

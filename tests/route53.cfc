@@ -70,100 +70,50 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
-			describe( 'isDomainAlreadyDefined()' , function() {
+			describe( 'addAliasSubdomain() and deleteAliasSubdomain()' , function() {
 
 				beforeEach( function() {
 
-					makePublic( service , 'isDomainAlreadyDefined' , 'isDomainAlreadyDefined' );
-
-				});
-
-
-				it( 'returns true for a defined top level domain' , function() {
-
-					actual = service.isDomainAlreadyDefined( 
-						domain = application.aws_settings.route53_tld
-					);
-					
-					expect( actual ).toBeTrue();
-
-				});
-
-				it( 'returns false for a fake domain' , function() {
-
-					actual = service.isDomainAlreadyDefined( 
-						domain = 'some-fake-domain.com'
-					);
-
-					expect( actual ).toBeFalse();
-
-				});
-
-			});
-
-			describe( 'isSubdomainAlreadyDefined()' , function() {
-
-				beforeEach( function() {
-
-					makePublic( service , 'isSubdomainAlreadyDefined' , 'isSubdomainAlreadyDefined' );
-
-				});
-
-				it( 'returns true for a defined subdomain' , function() {
-
-					actual = service.isSubdomainAlreadyDefined( 
-						subdomain = generateSubdomainName( 'exists' ) 
-					);
-					
-					expect( actual ).toBeTrue();
-
-				});
-
-				it( 'returns false for a fake subdomain' , function() {
-
-					actual = service.isSubdomainAlreadyDefined( 
-						subdomain = generateSubdomainName( 'missing' ) 
-					);
-
-					expect( actual ).toBeFalse();
-
-				});
-
-			});
-
-			describe( 'linkSubdomainToELB() and deleteSubdomain()' , function() {
-
-				beforeEach( function() {
-
-					makePublic( service , 'isSubdomainAlreadyDefined' , 'isSubdomainAlreadyDefined' );
+					makePublic( service , 'getHostedZoneForDomain' , 'getHostedZoneForDomain' );
 
 				});
 
 				it( 'can alias a subdomain using supplied hostedZoneID and ELB target and then delete it' , function() {
 
+					var count_resources = function() {
+						return service.getHostedZoneForDomain( 
+								domain = application.aws_settings.route53_tld
+							)
+							.getResourceRecordSetCount();
+					};
+
+					initial_number_of_resource_records = count_resources();
+
 					example_subdomain = generateSubdomainName( CreateUUID() );
 
-					expect(
-						service.isSubdomainAlreadyDefined( example_subdomain )
-					).toBeFalse();
-
-					service.linkSubdomainToELB(
+					service.addAliasSubdomain(
 						subdomain = example_subdomain,
 						targetELBHostedZoneID = application.aws_settings.route53_alias_hostedzoneid,
 						targetELB = application.aws_settings.route53_alias_target
 					);
 
 					expect(
-						service.isSubdomainAlreadyDefined( example_subdomain )
-					).toBeTrue();
+						count_resources()
+					).toBe(
+						initial_number_of_resource_records + 1
+					);
 
-					service.deleteSubdomain(
-						subdomain = example_subdomain
+					service.deleteAliasSubdomain(
+						subdomain = example_subdomain,
+						targetELBHostedZoneID = application.aws_settings.route53_alias_hostedzoneid,
+						targetELB = application.aws_settings.route53_alias_target
 					);
 
 					expect(
-						service.isSubdomainAlreadyDefined( example_subdomain )
-					).toBeFalse();
+						count_resources()
+					).toBe(
+						initial_number_of_resource_records
+					);
 
 				});
 

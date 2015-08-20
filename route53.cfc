@@ -47,35 +47,41 @@ component accessors=true extends='aws' {
 
 	}
 
-	private boolean function isDomainAlreadyDefined(
-		required string domain
-	) {
-
-		try {
-			getHostedZoneForDomain(
-				domain = arguments.domain
-			);
-			return true;
-		} catch ( route53.domain.nonexistant e ) {
-			// Expected error from getHostedZoneForDomain
-		}
-		return false;
-
-	}
-
-	private boolean function isSubdomainAlreadyDefined(
-		required string subdomain
-	) {
-
-
-		return false;
-
-	}
-
-	public route53 function linkSubdomainToELB(
+	public route53 function addAliasSubdomain(
 		required string subdomain,
 		required string targetELBHostedZoneID,
 		required string targetELB
+	) {
+
+		return changeAliasSubdomain(
+			action = 'UPSERT',
+			subdomain = arguments.subdomain,
+			targetELBHostedZoneID = arguments.targetELBHostedZoneID,
+			targetELB = arguments.targetELB
+		);
+
+	}
+
+	public route53 function deleteAliasSubdomain(
+		required string subdomain,
+		required string targetELBHostedZoneID,
+		required string targetELB
+	) {
+
+		return changeAliasSubdomain(
+			action = 'DELETE',
+			subdomain = arguments.subdomain,
+			targetELBHostedZoneID = arguments.targetELBHostedZoneID,
+			targetELB = arguments.targetELB
+		);
+
+	}
+
+	public route53 function changeAliasSubdomain(
+		required string subdomain,
+		required string targetELBHostedZoneID,
+		required string targetELB,
+		required string action
 	) {
 
 		var full_domain = arguments.subdomain;
@@ -84,11 +90,11 @@ component accessors=true extends='aws' {
 
 		var route53 = getRoute53Client();
 
-		if ( 
-			!isDomainAlreadyDefined(
+		try {
+			var hosted_zone = getHostedZoneForDomain(
 				domain = tl_domain
-			)
-		) {
+			);
+		} catch ( route53.domain.nonexistant e ) {
 			throw('Unable to find hosted zone for domain '&tl_domain);
 		}
 
@@ -117,7 +123,7 @@ component accessors=true extends='aws' {
 			'java',
 			'com.amazonaws.services.route53.model.Change'
 		).init(
-			'UPSERT',
+			arguments.action,
 			resource_record_set
 		);
 
@@ -144,14 +150,5 @@ component accessors=true extends='aws' {
 		
 		return this;
 	}
-
-	public route53 function deleteSubdomain(
-		required string subdomain
-	) {
-
-		
-		return this;
-	}
-
 
 }
