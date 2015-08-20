@@ -18,8 +18,11 @@ component {
 		application.aws_settings = {
 			'aws_accountid': '',
 			'aws_secretkey': '',
-			's3_bucket': '',
-			'dynamodb_table': ''
+			'dynamodb_table': '',
+			'route53_alias_hostedzoneid': '',
+			'route53_alias_target': '',
+			'route53_tld': '',
+			's3_bucket': ''
 		};
 
 		for( key in env ) {
@@ -33,7 +36,4 @@ component {
 		return true;
 	}
 
-	public void function onRequest( required string requestedTemplate ) {
-		include template=arguments.requestedTemplate;
-	}
 }
