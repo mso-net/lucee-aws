@@ -18,8 +18,9 @@ component {
 		application.aws_settings = {
 			'aws_accountid': '',
 			'aws_secretkey': '',
-			's3_bucket': '',
-			'dynamodb_table': ''
+			'dynamodb_table': '',
+			'route53_tld': '',
+			's3_bucket': ''
 		};
 
 		for( key in env ) {
