@@ -19,6 +19,8 @@ component {
 			'aws_accountid': '',
 			'aws_secretkey': '',
 			'dynamodb_table': '',
+			'route53_alias_hostedzoneid': '',
+			'route53_alias_target': '',
 			'route53_tld': '',
 			's3_bucket': ''
 		};

@@ -35,7 +35,77 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
+			describe( 'isSubdomainAlreadyDefined()' , function() {
+
+				beforeEach( function() {
+
+					makePublic( service , 'isSubdomainAlreadyDefined' , 'isSubdomainAlreadyDefined' );
+
+				});
+
+				it( 'returns true for a defined subdomain' , function() {
+
+					expect(
+						service.isSubdomainAlreadyDefined( 
+							generateSubdomainName( 'exists' ) 
+						)
+					).toBeTrue();
+
+				});
+
+				it( 'returns false for a fake subdomain' , function() {
+
+					expect(
+						service.isSubdomainAlreadyDefined( 
+							generateSubdomainName( 'missing' ) 
+						)
+					).toBeFalse();
+
+				});
+
+			});
+
+			describe( 'linkSubdomainToELB() and deleteSubdomain()' , function() {
+
+				it( 'can alias a subdomain using supplied hostedZoneID and ELB target and then delete it' , function() {
+
+					example_subdomain = generateSubdomainName( CreateUUID() );
+ 
+					expect(
+						service.isSubdomainAlreadyDefined( example_subdomain )
+					).toBeFalse();
+
+					service.linkSubdomainToELB(
+						subdomain = example_subdomain,
+						hostedZoneID = application.aws_settings.route53_alias_hostedzoneid,
+						target = application.aws_settings.route53_alias_target
+					);
+
+					expect(
+						service.isSubdomainAlreadyDefined( example_subdomain )
+					).toBeTrue();
+
+					service.deleteSubdomain(
+						subdomain = example_subdomain
+					);
+
+					expect(
+						service.isSubdomainAlreadyDefined( example_subdomain )
+					).toBeFalse();
+
+				});
+
+			});
+
+
+
 		});
 
+	}
+
+	private string function generateSubdomainName(
+		required string name
+	) {
+		return arguments.name&'.'&application.aws_settings.route53_tld;
 	}
 }
