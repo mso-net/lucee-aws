@@ -35,6 +35,72 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
+			describe( 'getHostedZoneForDomain()' , function() {
+
+				beforeEach( function() {
+
+					makePublic( service , 'getHostedZoneForDomain' , 'getHostedZoneForDomain' );
+
+				});
+
+
+				it( 'returns true for a defined top level domain' , function() {
+
+					actual = service.getHostedZoneForDomain( 
+						domain = application.aws_settings.route53_tld
+					);
+					
+					expect(
+						actual.getClass().getName()
+					).toBe(
+						'com.amazonaws.services.route53.model.HostedZone'
+					);
+
+				});
+
+				it( 'errors for a fake domain' , function() {
+
+					expect( function() {
+						service.getHostedZoneForDomain( 
+							domain = 'some-fake-domain.com'
+						);
+					} ).toThrow( 'route53.domain.nonexistant' );
+
+				});
+
+			});
+
+			describe( 'isDomainAlreadyDefined()' , function() {
+
+				beforeEach( function() {
+
+					makePublic( service , 'isDomainAlreadyDefined' , 'isDomainAlreadyDefined' );
+
+				});
+
+
+				it( 'returns true for a defined top level domain' , function() {
+
+					actual = service.isDomainAlreadyDefined( 
+						domain = application.aws_settings.route53_tld
+					);
+					
+					expect( actual ).toBeTrue();
+
+				});
+
+				it( 'returns false for a fake domain' , function() {
+
+					actual = service.isDomainAlreadyDefined( 
+						domain = 'some-fake-domain.com'
+					);
+
+					expect( actual ).toBeFalse();
+
+				});
+
+			});
+
 			describe( 'isSubdomainAlreadyDefined()' , function() {
 
 				beforeEach( function() {
@@ -46,18 +112,7 @@ component extends='testbox.system.BaseSpec' {
 				it( 'returns true for a defined subdomain' , function() {
 
 					actual = service.isSubdomainAlreadyDefined( 
-						domain = generateSubdomainName( 'exists' ) 
-					);
-					
-					expect( actual ).toBeTrue();
-
-				});
-
-
-				it( 'returns true for a defined top level domain' , function() {
-
-					actual = service.isSubdomainAlreadyDefined( 
-						domain = application.aws_settings.route53_tld
+						subdomain = generateSubdomainName( 'exists' ) 
 					);
 					
 					expect( actual ).toBeTrue();
@@ -67,7 +122,7 @@ component extends='testbox.system.BaseSpec' {
 				it( 'returns false for a fake subdomain' , function() {
 
 					actual = service.isSubdomainAlreadyDefined( 
-						domain = generateSubdomainName( 'missing' ) 
+						subdomain = generateSubdomainName( 'missing' ) 
 					);
 
 					expect( actual ).toBeFalse();

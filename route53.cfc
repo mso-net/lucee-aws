@@ -25,12 +25,11 @@ component accessors=true extends='aws' {
 		return variables.route53Client;
 	}
 
-	private boolean function isSubdomainAlreadyDefined(
+	private any function getHostedZoneForDomain(
 		required string domain
 	) {
 
 		var target_domain = arguments.domain & '.';
-
 
 		var hosted_zones = getRoute53Client()
 			.listHostedZones()
@@ -40,9 +39,34 @@ component accessors=true extends='aws' {
 			if (
 				hosted_zone.Name == target_domain
 			) {
-				return true;
+				return hosted_zone;
 			}
 		}
+
+		throw( type = 'route53.domain.nonexistant' , detail = arguments.domain );
+
+	}
+
+	private boolean function isDomainAlreadyDefined(
+		required string domain
+	) {
+
+		try {
+			getHostedZoneForDomain(
+				domain = arguments.domain
+			);
+			return true;
+		} catch ( route53.domain.nonexistant e ) {
+			// Expected error from getHostedZoneForDomain
+		}
+		return false;
+
+	}
+
+	private boolean function isSubdomainAlreadyDefined(
+		required string subdomain
+	) {
+
 
 		return false;
 
@@ -61,7 +85,7 @@ component accessors=true extends='aws' {
 		var route53 = getRoute53Client();
 
 		if ( 
-			!isSubdomainAlreadyDefined(
+			!isDomainAlreadyDefined(
 				domain = tl_domain
 			)
 		) {
