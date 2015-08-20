@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/mso-net/lucee-aws.svg?branch=master)](https://travis-ci.org/mso-net/lucee-aws)
 
-Lucee extension to provide simpler access to common AWS commands through the AWS SDK
+Lucee extension to provide simpler access to common AWS commands through the AWS SDK.
 
 ## Installation
 
@@ -36,3 +36,8 @@ s3.getObject( 'path/to/something.ext' );
 s3.putObject( 'path/to/something.ext' , 'data:image/png;base64,data_base64_encoded_here' );
 s3.deleteObject( 'path/to/something.ext' );
 ```
+
+## Additional reading
+
+- [Strayegg lucee-aws blog](http://www.strayegg.com/tag/lucee-aws/)
+- [AWS SDK for Java API documentation](http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/index.html)
