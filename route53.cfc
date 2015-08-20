@@ -25,8 +25,27 @@ component accessors=true extends='aws' {
 		return variables.route53Client;
 	}
 
-	private boolean function isSubdomainAlreadyDefined() {
+	private boolean function isSubdomainAlreadyDefined(
+		required string domain
+	) {
+
+		var target_domain = arguments.domain & '.';
+
+
+		var hosted_zones = getRoute53Client()
+			.listHostedZones()
+			.HostedZones;
+
+		for( var hosted_zone in hosted_zones ) {
+			if (
+				hosted_zone.Name == target_domain
+			) {
+				return true;
+			}
+		}
+
 		return false;
+
 	}
 
 	public route53 function linkSubdomainToELB(
@@ -41,18 +60,10 @@ component accessors=true extends='aws' {
 
 		var route53 = getRoute53Client();
 
-		var found_hosted_zone = false;
-		for( var hosted_zone in route53.listHostedZones().HostedZones ) {
-			if (
-				hosted_zone.Name == tl_domain&'.'
-			) {
-				found_hosted_zone = true;
-				break;
-			}
-		}
-
 		if ( 
-			!found_hosted_zone
+			!isSubdomainAlreadyDefined(
+				domain = tl_domain
+			)
 		) {
 			throw('Unable to find hosted zone for domain '&tl_domain);
 		}

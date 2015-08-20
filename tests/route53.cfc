@@ -45,21 +45,32 @@ component extends='testbox.system.BaseSpec' {
 
 				it( 'returns true for a defined subdomain' , function() {
 
-					expect(
-						service.isSubdomainAlreadyDefined( 
-							generateSubdomainName( 'exists' ) 
-						)
-					).toBeTrue();
+					actual = service.isSubdomainAlreadyDefined( 
+						domain = generateSubdomainName( 'exists' ) 
+					);
+					
+					expect( actual ).toBeTrue();
+
+				});
+
+
+				it( 'returns true for a defined top level domain' , function() {
+
+					actual = service.isSubdomainAlreadyDefined( 
+						domain = application.aws_settings.route53_tld
+					);
+					
+					expect( actual ).toBeTrue();
 
 				});
 
 				it( 'returns false for a fake subdomain' , function() {
 
-					expect(
-						service.isSubdomainAlreadyDefined( 
-							generateSubdomainName( 'missing' ) 
-						)
-					).toBeFalse();
+					actual = service.isSubdomainAlreadyDefined( 
+						domain = generateSubdomainName( 'missing' ) 
+					);
+
+					expect( actual ).toBeFalse();
 
 				});
 
