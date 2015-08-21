@@ -237,7 +237,6 @@ component accessors=true extends='aws' {
 						'java',
 						'com.amazonaws.services.s3.model.CannedAccessControlList'
 					)
-					.init()
 					.valueOf( arguments.acl );
 
 				break;
