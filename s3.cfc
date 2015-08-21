@@ -173,7 +173,8 @@ component accessors=true extends='aws' {
 
 	public s3 function putObject(
 		required string key,
-		required string object
+		required string object,
+		string acl = 'inheritFromBucket'
 	) {
 		if (
 			!isDataStringValid(
@@ -210,14 +211,53 @@ component accessors=true extends='aws' {
 			object_metadata
 		);
 
+		return setObjectAcl(
+			key = arguments.key,
+			acl = arguments.acl
+		);
+	}
+
+	public s3 function setObjectAcl(
+		required string key,
+		required string acl
+	) {
+
+		var acl = '';
+
+		switch( arguments.acl ) {
+			case 'AuthenticatedRead':
+			case 'BucketOwnerFullControl':
+			case 'BucketOwnerRead':
+			case 'LogDeliveryWrite':
+			case 'Private':
+			case 'PublicRead':
+			case 'PublicReadWrite':
+
+				acl = CreateObject(
+						'java',
+						'com.amazonaws.services.s3.model.CannedAccessControlList'
+					)
+					.init()
+					.valueOf( arguments.acl );
+
+				break;
+
+			case 'inheritFromBucket':
+				acl = getBucketACL();
+				break;
+
+			default:
+				throw( type = 's3.acl.unrecognisedLevel' , detail = arguments.acl );
+				break;
+		}
+
 		getS3Client().setObjectAcl(
 			variables.bucket,
 			getKeyFromPath(
 				key = arguments.key
 			),
-			getBucketACL()
+			acl
 		);
-
 
 		return this;
 	}
