@@ -171,6 +171,50 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
+			describe( 'setObjectAcl()' , function() {
+
+				it( 'allows all canned ACL levels' , function() {
+
+					[
+						'AuthenticatedRead',
+						'BucketOwnerFullControl',
+						'BucketOwnerRead',
+						'LogDeliveryWrite',
+						'Private',
+						'PublicRead',
+						'PublicReadWrite'
+					].each( function( acl_to_test ) {
+						service.setObjectAcl(
+							key = 'logo.png',
+							acl = acl_to_test
+						);
+					} );
+
+				});
+
+				it( 'allows inheritance from bucket' , function() {
+
+					service.setObjectAcl(
+						key = 'logo.png',
+						acl = 'inheritFromBucket'
+					);
+
+				});
+
+
+				it( 'errors with unexpected input' , function() {
+
+					expect( function() {
+						service.setObjectAcl(
+							key = 'logo.png',
+							acl = 'who-cares-it-will-break-anyway'
+						);
+					} ).toThrow( 's3.acl.unrecognisedLevel' );
+
+				});
+
+			});
+
 			describe( 'putObject()' , function() {
 
 				it( 'throws an error if it can not understand the input string' , function() {
