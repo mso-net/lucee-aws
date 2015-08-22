@@ -93,8 +93,8 @@ component extends='testbox.system.BaseSpec' {
 
 					service.addAliasSubdomain(
 						subdomain = example_subdomain,
-						targetELBHostedZoneID = application.aws_settings.route53_alias_hostedzoneid,
-						targetELB = application.aws_settings.route53_alias_target
+						elb_region = application.aws_settings.elb_region,
+						elb_name = application.aws_settings.elb_name
 					);
 
 					expect(
@@ -105,8 +105,8 @@ component extends='testbox.system.BaseSpec' {
 
 					service.deleteAliasSubdomain(
 						subdomain = example_subdomain,
-						targetELBHostedZoneID = application.aws_settings.route53_alias_hostedzoneid,
-						targetELB = application.aws_settings.route53_alias_target
+						elb_region = application.aws_settings.elb_region,
+						elb_name = application.aws_settings.elb_name
 					);
 
 					expect(

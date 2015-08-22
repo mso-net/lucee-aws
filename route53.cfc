@@ -1,5 +1,6 @@
 component accessors=true extends='aws' {
 
+	property name='elb' type='elb' getter=false setter=false;
 	property name='route53Client' type='com.amazonaws.services.route53.AmazonRoute53Client' getter=false setter=false;	
 
 	public route53 function init(
@@ -8,6 +9,10 @@ component accessors=true extends='aws' {
 	) {
 
 		super.init(
+			argumentCollection = arguments
+		);
+
+		variables.elb = new elb(
 			argumentCollection = arguments
 		);
 
@@ -49,38 +54,38 @@ component accessors=true extends='aws' {
 
 	public route53 function addAliasSubdomain(
 		required string subdomain,
-		required string targetELBHostedZoneID,
-		required string targetELB
+		required string elb_region,
+		required string elb_name
 	) {
 
 		return changeAliasSubdomain(
 			action = 'UPSERT',
 			subdomain = arguments.subdomain,
-			targetELBHostedZoneID = arguments.targetELBHostedZoneID,
-			targetELB = arguments.targetELB
+			elb_region = arguments.elb_region,
+			elb_name = arguments.elb_name
 		);
 
 	}
 
 	public route53 function deleteAliasSubdomain(
 		required string subdomain,
-		required string targetELBHostedZoneID,
-		required string targetELB
+		required string elb_region,
+		required string elb_name
 	) {
 
 		return changeAliasSubdomain(
 			action = 'DELETE',
 			subdomain = arguments.subdomain,
-			targetELBHostedZoneID = arguments.targetELBHostedZoneID,
-			targetELB = arguments.targetELB
+			elb_region = arguments.elb_region,
+			elb_name = arguments.elb_name
 		);
 
 	}
 
 	public route53 function changeAliasSubdomain(
 		required string subdomain,
-		required string targetELBHostedZoneID,
-		required string targetELB,
+		required string elb_region,
+		required string elb_name,
 		required string action
 	) {
 
@@ -108,12 +113,17 @@ component accessors=true extends='aws' {
 			'A'
 		);
 
+		var elbToLinkTo = variables.elb.getConfig( 
+			region = arguments.elb_region,
+			name = arguments.elb_name
+		);
+
 		var alias_target = CreateObject(
 			'java',
 			'com.amazonaws.services.route53.model.AliasTarget'
 		).init(
-			arguments.targetELBHostedZoneID,
-			arguments.targetELB
+			elbToLinkTo.CanonicalHostedZoneNameID,
+			elbToLinkTo.CanonicalHostedZoneName
 		);
 
 		alias_target.setEvaluateTargetHealth( false );
