@@ -44,16 +44,14 @@ component accessors=true extends='aws' {
 			.withDNSName( target_domain )
 			.withMaxItems( 1 );
 
-		var hosted_zones = getRoute53Client()
+		var hosted_zone = getRoute53Client()
 			.listHostedZonesByName(hosted_zones_request)
-			.HostedZones;
+			.HostedZones[1];
 
-		for( var hosted_zone in hosted_zones ) {
-			if (
-				hosted_zone.Name == target_domain
-			) {
-				return hosted_zone;
-			}
+		if (
+			hosted_zone.Name == target_domain
+		) {
+			return hosted_zone;
 		}
 
 		throw( type = 'route53.domain.nonexistant' , detail = arguments.domain );
