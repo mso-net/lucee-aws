@@ -25,9 +25,9 @@ component extends='testbox.system.BaseSpec' {
 
 			it( 'has a dynamodb client stored' , function() {
 
-				makePublic( service , 'getDynamodbClient' , 'getDynamodbClient' );
+				makePublic( service , 'getMyClient' , 'getMyClient' );
 
-				actual = service.getDynamodbClient();
+				actual = service.getMyClient();
 
 				expect(
 					actual.getClass().getName()

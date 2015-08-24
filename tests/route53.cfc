@@ -23,9 +23,9 @@ component extends='testbox.system.BaseSpec' {
 
 			it( 'has a Route53 client stored' , function() {
 
-				makePublic( service , 'getRoute53Client' , 'getRoute53Client' );
+				makePublic( service , 'getMyClient' , 'getMyClient' );
 
-				actual = service.getRoute53Client();
+				actual = service.getMyClient();
 
 				expect(
 					actual.getClass().getName()

@@ -40,4 +40,20 @@ component accessors=true {
 		);
 	}
 
+	private any function getMyClient() {
+		return variables.myClient;
+	}
+
+	public function setRegion(
+		string region = 'eu-west-1'
+	) {
+		getMyClient().setRegion(
+			getRegion(
+				arguments.region
+			)
+		);
+
+		return this;
+	}
+
 }

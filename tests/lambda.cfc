@@ -7,7 +7,8 @@ component extends='testbox.system.BaseSpec' {
 			beforeEach( function( currentSpec ) {
 				service = new aws.lambda(
 					account = application.aws_settings.aws_accountid,
-					secret = application.aws_settings.aws_secretkey
+					secret = application.aws_settings.aws_secretkey,
+					region = application.aws_settings.elb_region
 				);
 			});
 
@@ -23,9 +24,9 @@ component extends='testbox.system.BaseSpec' {
 
 			it( 'has a Lambda client stored' , function() {
 
-				makePublic( service , 'getLambdaClient' , 'getLambdaClient' );
+				makePublic( service , 'getMyClient' , 'getMyClient' );
 
-				actual = service.getLambdaClient();
+				actual = service.getMyClient();
 
 				expect(
 					actual.getClass().getName()
@@ -46,7 +47,6 @@ component extends='testbox.system.BaseSpec' {
 					};
 
 					actual = service.invoke( 
-						region = application.aws_settings.elb_region,
 						method = application.aws_settings.lambda_method,
 						payload = payload
 					);

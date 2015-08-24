@@ -7,7 +7,8 @@ component extends='testbox.system.BaseSpec' {
 			beforeEach( function( currentSpec ) {
 				service = new aws.ses(
 					account = application.aws_settings.aws_accountid,
-					secret = application.aws_settings.aws_secretkey
+					secret = application.aws_settings.aws_secretkey,
+					region = application.aws_settings.elb_region
 				);
 			});
 
@@ -23,9 +24,9 @@ component extends='testbox.system.BaseSpec' {
 
 			it( 'has an SES client stored' , function() {
 
-				makePublic( service , 'getSESClient' , 'getSESClient' );
+				makePublic( service , 'getMyClient' , 'getMyClient' );
 
-				actual = service.getSESClient();
+				actual = service.getMyClient();
 
 				expect(
 					actual.getClass().getName()
@@ -54,6 +55,20 @@ component extends='testbox.system.BaseSpec' {
 
 				});
 
+			});
+
+			describe( 'listVerifiedEmailAddresses()' , function() {
+
+				it( 'has only got the to and from addresses in Application' , function() {
+
+					actual = service.listVerifiedEmailAddresses();
+
+					expect( actual ).toHaveLength( 2 );
+
+					expect( actual ).toContain( application.aws_settings.ses_to );
+					expect( actual ).toContain( application.aws_settings.ses_from );
+
+				});
 
 			});
 

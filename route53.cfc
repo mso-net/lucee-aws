@@ -1,7 +1,7 @@
 component accessors=true extends='aws' {
 
 	property name='elb' type='elb' getter=false setter=false;
-	property name='route53Client' type='com.amazonaws.services.route53.AmazonRoute53Client' getter=false setter=false;	
+	property name='myClient' type='com.amazonaws.services.route53.AmazonRoute53Client' getter=false setter=false;	
 
 	public route53 function init(
 		required string account,
@@ -16,7 +16,7 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.route53Client = CreateObject(
+		variables.myClient = CreateObject(
 			'java',
 			'com.amazonaws.services.route53.AmazonRoute53Client'
 		).init(
@@ -24,10 +24,6 @@ component accessors=true extends='aws' {
 		);
 
 		return this;
-	}
-
-	private any function getRoute53Client() {
-		return variables.route53Client;
 	}
 
 	private any function getHostedZone(
@@ -44,7 +40,7 @@ component accessors=true extends='aws' {
 			.withDNSName( target_domain )
 			.withMaxItems( 1 );
 
-		var hosted_zone = getRoute53Client()
+		var hosted_zone = getMyClient()
 			.listHostedZonesByName(hosted_zones_request)
 			.HostedZones[1];
 
@@ -84,7 +80,7 @@ component accessors=true extends='aws' {
 			)
 			.withStartRecordName( target_subdomain );
 
-		var resource_record_set = getRoute53Client()
+		var resource_record_set = getMyClient()
 			.listResourceRecordSets( resource_record_sets_request )
 			.ResourceRecordSets[1];
 
@@ -142,8 +138,9 @@ component accessors=true extends='aws' {
 			'A'
 		);
 
-		var elbToLinkTo = variables.elb.getConfig( 
-			region = arguments.elb_region,
+		var elbToLinkTo = variables.elb.setRegion(
+			region = arguments.elb_region
+		).getConfig( 
 			name = arguments.elb_name
 		);
 
@@ -207,7 +204,7 @@ component accessors=true extends='aws' {
 
 		var tl_domain = arguments.subdomain.ListDeleteAt( 1 , '.' );
 
-		var route53 = getRoute53Client();
+		var route53 = getMyClient();
 
 		try {
 			var hosted_zone_id = getHostedZoneID(

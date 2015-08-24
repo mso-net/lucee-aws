@@ -1,43 +1,37 @@
 component accessors=true extends='aws' {
 
-	property name='lambdaClient' type='com.amazonaws.services.lambda.AWSLambdaClient' getter=false setter=false;	
+	property name='myClient' type='com.amazonaws.services.lambda.AWSLambdaClient' getter=false setter=false;	
 
 	public lambda function init(
 		required string account,
-		required string secret
+		required string secret,
+		string region = 'eu-west-1'
 	) {
 
 		super.init(
 			argumentCollection = arguments
 		);
 
-		variables.lambdaClient = CreateObject(
+		variables.myClient = CreateObject(
 			'java',
 			'com.amazonaws.services.lambda.AWSLambdaClient'
 		).init(
 			getCredentials()
 		);
 
+		if (
+			StructKeyExists( arguments , 'region' ) 
+		) {
+			setRegion( region = arguments.region );
+		}
+
 		return this;
 	}
 
-	private any function getLambdaClient() {
-		return variables.lambdaClient;
-	}
-
 	public any function invoke(
-		required string region,
 		required string method,
 		required struct payload
 	) {
-
-		// This is duplicating because setRegion is not threadsafe
-		var rqLambdaClient = Duplicate( variables.lambdaClient );
-		rqLambdaClient.setRegion(
-			getRegion(
-				arguments.region
-			)
-		);
 
 		var invoke_request = CreateObject(
 			'java',
@@ -55,7 +49,7 @@ component accessors=true extends='aws' {
 		return 
 			DeserializeJSON(
 				ToString( 
-					rqLambdaClient
+					getMyClient()
 						.invoke( invoke_request )
 						.getPayload()
 						.array() 

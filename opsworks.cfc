@@ -6,8 +6,7 @@ component accessors=true extends='aws' {
 
 	public opsworks function init(
 		required string account,
-		required string secret,
-		required string region
+		required string secret
 	) {
 
 		super.init(
@@ -20,7 +19,6 @@ component accessors=true extends='aws' {
 		).init(
 			getCredentials()
 		);
-
 
 		return this;
 	}
