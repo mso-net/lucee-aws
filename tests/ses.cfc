@@ -111,8 +111,6 @@ This is an email sent by the unit tester
 --_003_97DCB304C5294779BEBCFC8357FCC4D2';
 
 					service.sendRawEmail(
-						to = application.aws_settings.ses_to,
-						from = application.aws_settings.ses_from,
 						data = example_raw_email
 					);
 

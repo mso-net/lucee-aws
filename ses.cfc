@@ -196,33 +196,11 @@ component accessors=true extends='aws' {
 				)
 		);
 
-
-		var destinations = arguments.to.ListToArray( ';' )
-					.map( function( email ) {
-						return 'TO:'&arguments.email;
-					})
-					.merge( 
-						arguments.cc.ListToArray( ';' )
-							.map( function( email ) {
-								return 'CC:'&arguments.email;
-							}),
-						false
-					)
-					.merge( 
-						arguments.bcc.ListToArray( ';' )
-							.map( function( email ) {
-								return 'BCC:'&arguments.email;
-							}),
-						false
-					);
-
 		var send_raw_email_request = CreateObject(
 			'java',
 			'com.amazonaws.services.simpleemail.model.SendRawEmailRequest'
 		)
 			.init()
-			.withDestinations( destinations )
-			.withSource( arguments.from )
 			.withRawMessage( email_message );
 
 		getMyClient().sendRawEmail(
