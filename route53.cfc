@@ -30,26 +30,102 @@ component accessors=true extends='aws' {
 		return variables.route53Client;
 	}
 
-	private any function getHostedZoneForDomain(
+	private any function getHostedZone(
 		required string domain
 	) {
 
 		var target_domain = arguments.domain & '.';
 
-		var hosted_zones = getRoute53Client()
-			.listHostedZones()
-			.HostedZones;
+		var hosted_zones_request = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ListHostedZonesByNameRequest'
+		)
+			.init()
+			.withDNSName( target_domain )
+			.withMaxItems( 1 );
 
-		for( var hosted_zone in hosted_zones ) {
-			if (
-				hosted_zone.Name == target_domain
-			) {
-				return hosted_zone;
-			}
+		var hosted_zone = getRoute53Client()
+			.listHostedZonesByName(hosted_zones_request)
+			.HostedZones[1];
+
+		if (
+			hosted_zone.Name == target_domain
+		) {
+			return hosted_zone;
 		}
 
 		throw( type = 'route53.domain.nonexistant' , detail = arguments.domain );
 
+	}
+
+	private string function getHostedZoneID(
+		required string domain
+	) {
+
+		return getHostedZone(
+			domain = arguments.domain
+		).Id.ListLast( '/' );
+
+	}
+
+	private any function getResourceRecordForSubdomain(
+		required string subdomain
+	) {
+		var target_subdomain = arguments.subdomain & '.';
+
+		var resource_record_sets_request = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ListResourceRecordSetsRequest'
+		)
+			.init( 
+				getHostedZoneID(
+					domain = arguments.subdomain.ListDeleteAt( 1 , '.' )
+				)
+			)
+			.withStartRecordName( target_subdomain );
+
+		var resource_record_set = getRoute53Client()
+			.listResourceRecordSets( resource_record_sets_request )
+			.ResourceRecordSets[1];
+
+		if (
+			resource_record_set.Name == target_subdomain
+		) {
+			return resource_record_set;
+		}
+
+		throw( type = 'route53.subdomain.nonexistant' , detail = arguments.subdomain );
+
+	}
+
+	public boolean function isThereAHostedZoneForThisDomain(
+		required string domain
+	) {
+
+		try {
+			getHostedZone(
+				domain = arguments.domain
+			);
+			return true;
+		} catch ( route53.domain.nonexistant e ) {
+			return false;
+		}
+
+	}
+
+	public boolean function isThereAResourceRecordForThisSubdomain(
+		required string subdomain
+	) {
+
+		try {
+			getResourceRecordForSubdomain(
+				subdomain = arguments.subdomain
+			);
+			return true;
+		} catch ( route53.subdomain.nonexistant e ) {
+			return false;
+		}
+		
 	}
 
 	public route53 function addAliasSubdomain(
@@ -58,58 +134,11 @@ component accessors=true extends='aws' {
 		required string elb_name
 	) {
 
-		return changeAliasSubdomain(
-			action = 'UPSERT',
-			subdomain = arguments.subdomain,
-			elb_region = arguments.elb_region,
-			elb_name = arguments.elb_name
-		);
-
-	}
-
-	public route53 function deleteAliasSubdomain(
-		required string subdomain,
-		required string elb_region,
-		required string elb_name
-	) {
-
-		return changeAliasSubdomain(
-			action = 'DELETE',
-			subdomain = arguments.subdomain,
-			elb_region = arguments.elb_region,
-			elb_name = arguments.elb_name
-		);
-
-	}
-
-	public route53 function changeAliasSubdomain(
-		required string subdomain,
-		required string elb_region,
-		required string elb_name,
-		required string action
-	) {
-
-		var full_domain = arguments.subdomain;
-		var sub_domain = ListFirst( full_domain , '.' );
-		var tl_domain = ListDeleteAt( full_domain , 1 , '.' );
-
-		var route53 = getRoute53Client();
-
-		try {
-			var hosted_zone = getHostedZoneForDomain(
-				domain = tl_domain
-			);
-		} catch ( route53.domain.nonexistant e ) {
-			throw('Unable to find hosted zone for domain '&tl_domain);
-		}
-
-		var hosted_zone_id = hosted_zone.Id;
-
 		var resource_record_set = CreateObject(
 			'java',
 			'com.amazonaws.services.route53.model.ResourceRecordSet'
 		).init(
-			full_domain&'.',
+			arguments.subdomain&'.',
 			'A'
 		);
 
@@ -133,16 +162,67 @@ component accessors=true extends='aws' {
 			'java',
 			'com.amazonaws.services.route53.model.Change'
 		).init(
-			arguments.action,
+			'UPSERT',
 			resource_record_set
 		);
+
+		return changeResourceRecordSets(
+			subdomain = arguments.subdomain,
+			change = change
+		);
+
+	}
+
+	public route53 function deleteSubdomain(
+		required string subdomain
+	) {
+
+		try {
+			var resource_record_set = getResourceRecordForSubdomain(
+				subdomain = arguments.subdomain
+			);
+		} catch ( route53.subdomain.nonexistant e ) {
+			throw('Unable to find resource record for subdomain '&arguments.subdomain);
+		}
+
+		var change = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.Change'
+		).init(
+			'DELETE',
+			resource_record_set
+		);
+
+		return changeResourceRecordSets(
+			subdomain = arguments.subdomain,
+			change = change
+		);
+
+	}
+
+	private route53 function changeResourceRecordSets(
+		required string subdomain,
+		required change
+	) {
+
+		var tl_domain = arguments.subdomain.ListDeleteAt( 1 , '.' );
+
+		var route53 = getRoute53Client();
+
+		try {
+			var hosted_zone_id = getHostedZoneID(
+				domain = tl_domain
+			);
+		} catch ( route53.domain.nonexistant e ) {
+			throw('Unable to find hosted zone for domain '&tl_domain);
+		}
 
 		var change_batch = CreateObject(
 			'java',
 			'com.amazonaws.services.route53.model.ChangeBatch'
 		).init(
 			[
-				change
+				arguments.change
 			]
 		);
 
@@ -159,6 +239,7 @@ component accessors=true extends='aws' {
 		);
 		
 		return this;
+
 	}
 
 }
