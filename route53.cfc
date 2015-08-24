@@ -134,18 +134,6 @@ component accessors=true extends='aws' {
 		required string elb_name
 	) {
 
-		var tl_domain = arguments.subdomain.ListDeleteAt( 1 , '.' );
-
-		var route53 = getRoute53Client();
-
-		try {
-			var hosted_zone_id = getHostedZoneID(
-				domain = tl_domain
-			);
-		} catch ( route53.domain.nonexistant e ) {
-			throw('Unable to find hosted zone for domain '&tl_domain);
-		}
-
 		var resource_record_set = CreateObject(
 			'java',
 			'com.amazonaws.services.route53.model.ResourceRecordSet'
@@ -178,46 +166,16 @@ component accessors=true extends='aws' {
 			resource_record_set
 		);
 
-		var change_batch = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.ChangeBatch'
-		).init(
-			[
-				change
-			]
+		return changeResourceRecordSets(
+			subdomain = arguments.subdomain,
+			change = change
 		);
-
-		var change_resource_record_sets_request = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest'
-		).init(
-			hosted_zone_id,
-			change_batch
-		);
-
-		route53.changeResourceRecordSets(
-			change_resource_record_sets_request
-		);
-		
-		return this;
 
 	}
 
 	public route53 function deleteSubdomain(
 		required string subdomain
 	) {
-
-		var tl_domain = arguments.subdomain.ListDeleteAt( 1 , '.' );
-
-		var route53 = getRoute53Client();
-
-		try {
-			var hosted_zone_id = getHostedZoneID(
-				domain = tl_domain
-			);
-		} catch ( route53.domain.nonexistant e ) {
-			throw('Unable to find hosted zone for domain '&tl_domain);
-		}
 
 		try {
 			var resource_record_set = getResourceRecordForSubdomain(
@@ -235,12 +193,36 @@ component accessors=true extends='aws' {
 			resource_record_set
 		);
 
+		return changeResourceRecordSets(
+			subdomain = arguments.subdomain,
+			change = change
+		);
+
+	}
+
+	private route53 function changeResourceRecordSets(
+		required string subdomain,
+		required change
+	) {
+
+		var tl_domain = arguments.subdomain.ListDeleteAt( 1 , '.' );
+
+		var route53 = getRoute53Client();
+
+		try {
+			var hosted_zone_id = getHostedZoneID(
+				domain = tl_domain
+			);
+		} catch ( route53.domain.nonexistant e ) {
+			throw('Unable to find hosted zone for domain '&tl_domain);
+		}
+
 		var change_batch = CreateObject(
 			'java',
 			'com.amazonaws.services.route53.model.ChangeBatch'
 		).init(
 			[
-				change
+				arguments.change
 			]
 		);
 
