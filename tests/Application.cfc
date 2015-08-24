@@ -25,16 +25,6 @@ component {
 	            'route53_tld': '', 		// a hosted zone domain name i.e. something.com
 	            's3_bucket': ''  		// name of an s3 bucket
 	        };
-		application.aws_settings = {
-			'aws_accountid': '',
-			'aws_secretkey': '',
-			'dynamodb_table': '',
-			'elb_name': '',
-			'elb_region': '',
-			'lambda_method': '',
-			'route53_tld': '',
-			's3_bucket': ''
-		};
 
 		for( key in env ) {
 			if (
