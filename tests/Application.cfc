@@ -21,6 +21,7 @@ component {
 			'dynamodb_table': '',
 			'elb_name': '',
 			'elb_region': '',
+			'lambda_method': '',
 			'route53_tld': '',
 			's3_bucket': ''
 		};
