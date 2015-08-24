@@ -164,7 +164,7 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
-			describe( 'addAliasSubdomain() and deleteAliasSubdomain()' , function() {
+			describe( 'addAliasSubdomain() and deleteSubdomain()' , function() {
 
 				it( 'can alias a subdomain using supplied hostedZoneID and ELB target and then delete it' , function() {
 
@@ -184,7 +184,7 @@ component extends='testbox.system.BaseSpec' {
 						service.isThereAResorceRecordForThisSubdomain( subdomain = example_subdomain )
 					).toBeTrue();
 
-					service.deleteAliasSubdomain(
+					service.deleteSubdomain(
 						subdomain = example_subdomain
 					);
 

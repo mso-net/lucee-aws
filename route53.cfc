@@ -30,7 +30,7 @@ component accessors=true extends='aws' {
 		return variables.route53Client;
 	}
 
-	private any function getHostedZoneForDomain(
+	private any function getHostedZone(
 		required string domain
 	) {
 
@@ -52,51 +52,59 @@ component accessors=true extends='aws' {
 
 	}
 
+	private any function getResourceRecordForSubdomain(
+		required string subdomain
+	) {
+
+
+
+		throw( type = 'route53.subdomain.nonexistant' , detail = arguments.subdomain );
+
+	}
+
+	public boolean function isThereAHostedZoneForThisDomain(
+		required string domain
+	) {
+
+		try {
+			getHostedZone(
+				domain = arguments.domain
+			);
+			return true;
+		} catch ( route53.domain.nonexistant e ) {
+			return false;
+		}
+
+	}
+
+	public boolean function isThereAResourceRecordForThisSubdomain(
+		required string subdomain
+	) {
+
+		try {
+			getResourceRecordForSubdomain(
+				subdomain = arguments.subdomain
+			);
+			return true;
+		} catch ( route53.subdomain.nonexistant e ) {
+			return false;
+		}
+		
+	}
+
 	public route53 function addAliasSubdomain(
 		required string subdomain,
 		required string elb_region,
 		required string elb_name
 	) {
 
-		return changeAliasSubdomain(
-			action = 'UPSERT',
-			subdomain = arguments.subdomain,
-			elb_region = arguments.elb_region,
-			elb_name = arguments.elb_name
-		);
-
-	}
-
-	public route53 function deleteAliasSubdomain(
-		required string subdomain,
-		required string elb_region,
-		required string elb_name
-	) {
-
-		return changeAliasSubdomain(
-			action = 'DELETE',
-			subdomain = arguments.subdomain,
-			elb_region = arguments.elb_region,
-			elb_name = arguments.elb_name
-		);
-
-	}
-
-	public route53 function changeAliasSubdomain(
-		required string subdomain,
-		required string elb_region,
-		required string elb_name,
-		required string action
-	) {
-
-		var full_domain = arguments.subdomain;
-		var sub_domain = ListFirst( full_domain , '.' );
-		var tl_domain = ListDeleteAt( full_domain , 1 , '.' );
+		var sub_domain = ListFirst( arguments.subdomain , '.' );
+		var tl_domain = ListDeleteAt( arguments.subdomain , 1 , '.' );
 
 		var route53 = getRoute53Client();
 
 		try {
-			var hosted_zone = getHostedZoneForDomain(
+			var hosted_zone = getHostedZone(
 				domain = tl_domain
 			);
 		} catch ( route53.domain.nonexistant e ) {
@@ -109,7 +117,7 @@ component accessors=true extends='aws' {
 			'java',
 			'com.amazonaws.services.route53.model.ResourceRecordSet'
 		).init(
-			full_domain&'.',
+			arguments.subdomain&'.',
 			'A'
 		);
 
@@ -133,7 +141,7 @@ component accessors=true extends='aws' {
 			'java',
 			'com.amazonaws.services.route53.model.Change'
 		).init(
-			arguments.action,
+			'UPSERT',
 			resource_record_set
 		);
 
@@ -159,6 +167,67 @@ component accessors=true extends='aws' {
 		);
 		
 		return this;
+
+	}
+
+	public route53 function deleteSubdomain(
+		required string subdomain
+	) {
+
+		var sub_domain = ListFirst( arguments.subdomain , '.' );
+		var tl_domain = ListDeleteAt( arguments.subdomain , 1 , '.' );
+
+		var route53 = getRoute53Client();
+
+		try {
+			var hosted_zone = getHostedZone(
+				domain = tl_domain
+			);
+		} catch ( route53.domain.nonexistant e ) {
+			throw('Unable to find hosted zone for domain '&tl_domain);
+		}
+
+		var hosted_zone_id = hosted_zone.Id;
+
+		try {
+			var resource_record_set = getResourceRecordForSubdomain(
+				subdomain = arguments.subdomain
+			);
+		} catch ( route53.subdomain.nonexistant e ) {
+			throw('Unable to find resource record for subdomain '&arguments.subdomain);
+		}
+
+		var change = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.Change'
+		).init(
+			'DELETE',
+			resource_record_set
+		);
+
+		var change_batch = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ChangeBatch'
+		).init(
+			[
+				change
+			]
+		);
+
+		var change_resource_record_sets_request = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest'
+		).init(
+			hosted_zone_id,
+			change_batch
+		);
+
+		route53.changeResourceRecordSets(
+			change_resource_record_sets_request
+		);
+		
+		return this;
+
 	}
 
 }
