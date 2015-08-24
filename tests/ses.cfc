@@ -42,6 +42,8 @@ component extends='testbox.system.BaseSpec' {
 
 					actual = service.getSendQuota();
 
+					expect( actual ).toBeStruct();
+
 					expect( actual ).toHaveKey( 'Max24HourSend' );
 					expect( actual ).toHaveKey( 'MaxSendRate' );
 					expect( actual ).toHaveKey( 'SentLast24Hours' );
@@ -65,6 +67,22 @@ component extends='testbox.system.BaseSpec' {
 
 					expect( actual ).toInclude( application.aws_settings.ses_to );
 					expect( actual ).toInclude( application.aws_settings.ses_from );
+
+				});
+
+			});
+
+			describe( 'sendEmail()' , function() {
+
+				it( 'can send am email without erroring' , function() {
+
+					service.sendEmail(
+						to = application.aws_settings.ses_to,
+						from = application.aws_settings.ses_from,
+						subject = 'lucee-aws test email '&GetTickCount(),
+						body = 'This is just some plain text',
+						format = 'plain'
+					);
 
 				});
 

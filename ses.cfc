@@ -85,4 +85,87 @@ component accessors=true extends='aws' {
 		return this;
 	}
 
+	public ses function sendEmail(
+		required string from,
+		required string to,
+		required string subject,
+		required string body,
+		string format = 'plain',
+		string cc,
+		string bcc
+	) {
+
+		var email_subject = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.Content'
+		).init(
+			arguments.subject
+		);
+
+		var email_body_content = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.Content'
+		).init(
+			arguments.body
+		);
+
+		var email_body = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.Body'
+		).init();
+
+		switch( arguments.format ) {
+			case 'html':
+				email_body.setHtml( email_body_content );
+				break;
+			case 'plain':
+			default:
+				email_body.setText( email_body_content );
+				break;
+		}
+
+		var email_message = CreateObject( 
+			'java',
+			'com.amazonaws.services.simpleemail.model.Message'
+		).init(
+			email_subject,
+			email_body
+		);
+
+
+		var destination = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.Destination'
+		)
+			.init()
+			.withToAddresses( arguments.to.ListToArray( ',' ) );
+
+		if (
+			StructKeyExists( arguments , 'cc' )
+		) {
+			destination.setCcAddresses( arguments.cc.ListToArray( ',' ) );
+		}
+
+		if (
+			StructKeyExists( arguments , 'bcc' )
+		) {
+			destination.setBccAddresses( arguments.bcc.ListToArray( ',' ) );
+		}
+
+		var send_email_request = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.SendEmailRequest'
+		)
+			.init()
+			.withDestination( destination )
+			.withSource( arguments.from )
+			.withMessage( email_message );
+
+		getMyClient().sendEmail(
+			send_email_request
+		);
+
+		return this;
+	}
+
 }
