@@ -138,18 +138,18 @@ component accessors=true extends='aws' {
 			'com.amazonaws.services.simpleemail.model.Destination'
 		)
 			.init()
-			.withToAddresses( arguments.to.ListToArray( ',' ) );
+			.withToAddresses( arguments.to.ListToArray( ';' ) );
 
 		if (
 			StructKeyExists( arguments , 'cc' )
 		) {
-			destination.setCcAddresses( arguments.cc.ListToArray( ',' ) );
+			destination.setCcAddresses( arguments.cc.ListToArray( ';' ) );
 		}
 
 		if (
 			StructKeyExists( arguments , 'bcc' )
 		) {
-			destination.setBccAddresses( arguments.bcc.ListToArray( ',' ) );
+			destination.setBccAddresses( arguments.bcc.ListToArray( ';' ) );
 		}
 
 		var send_email_request = CreateObject(
@@ -163,6 +163,70 @@ component accessors=true extends='aws' {
 
 		getMyClient().sendEmail(
 			send_email_request
+		);
+
+		return this;
+	}
+
+	public ses function sendRawEmail(
+		required string from,
+		required string to,
+		required string data,
+		string cc = '',
+		string bcc = ''
+	) {
+
+		var email_message = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.RawMessage'
+		).init(
+			CreateObject(
+				'java',
+				'java.nio.charset.Charset'
+			)
+				.forName( 'UTF-8' )
+				.newEncoder()
+				.encode(
+					CreateObject(
+						'java',
+						'java.nio.CharBuffer'
+					).wrap(
+						arguments.data
+					)
+				)
+		);
+
+
+		var destinations = arguments.to.ListToArray( ';' )
+					.map( function( email ) {
+						return 'TO:'&arguments.email;
+					})
+					.merge( 
+						arguments.cc.ListToArray( ';' )
+							.map( function( email ) {
+								return 'CC:'&arguments.email;
+							}),
+						false
+					)
+					.merge( 
+						arguments.bcc.ListToArray( ';' )
+							.map( function( email ) {
+								return 'BCC:'&arguments.email;
+							}),
+						false
+					);
+
+		var send_raw_email_request = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.SendRawEmailRequest'
+		)
+			.init()
+			.withDestinations( destinations )
+			.withSource( arguments.from )
+			.withRawMessage( email_message );
+
+		getMyClient().sendRawEmail(
+			send_raw_email_request
 		);
 
 		return this;

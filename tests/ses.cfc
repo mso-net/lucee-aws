@@ -88,6 +88,38 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
+			describe( 'sendRawEmail()' , function() {
+
+				it( 'can send am email without erroring' , function() {
+
+					example_raw_email = 'Received: from smtp-out.example.com (123.45.67.89) by
+in.example.com (87.65.43.210); Wed, 2 Mar 2011 11:39:39 -0800
+From: '&application.aws_settings.ses_from&'
+To: '&application.aws_settings.ses_to&'
+Subject: lucee-aws raw test email '&GetTickCount()&'
+Message-ID: <97DCB304-C529-4779-BEBC-FC8357FCC4D2@lucee-aws.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="_003_97DCB304C5294779BEBCFC8357FCC4D2"
+
+--_003_97DCB304C5294779BEBCFC8357FCC4D2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+This is an email sent by the unit tester
+
+--_003_97DCB304C5294779BEBCFC8357FCC4D2';
+
+					service.sendRawEmail(
+						to = application.aws_settings.ses_to,
+						from = application.aws_settings.ses_from,
+						data = example_raw_email
+					);
+
+				});
+
+			});
+
 			describe( 'verifyEmailAddress() and deleteVerifiedEmailAddress()' , function() {
 
 				it( 'can verify an email address and then delete it' , function() {
