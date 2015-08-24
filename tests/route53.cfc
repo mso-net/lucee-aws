@@ -71,6 +71,39 @@ component extends='testbox.system.BaseSpec' {
 			});
 
 
+			describe( 'getHostedZoneID()' , function() {
+
+				beforeEach( function() {
+
+					makePublic( service , 'getHostedZoneID' , 'getHostedZoneID' );
+
+				});
+
+
+				it( 'returns string hosted zone ID for known domain' , function() {
+
+					actual = service.getHostedZoneID( 
+						domain = application.aws_settings.route53_tld
+					);
+					
+					expect( actual ).toBeString();
+					expect( actual ).toHaveLength( 13 );
+
+				});
+
+				it( 'errors for a fake domain' , function() {
+
+					expect( function() {
+						service.getHostedZoneID( 
+							domain = 'some-fake-domain.com'
+						);
+					} ).toThrow( 'route53.domain.nonexistant' );
+
+				});
+
+			});
+
+
 			describe( 'getResourceRecordForSubdomain()' , function() {
 
 				beforeEach( function() {
@@ -140,12 +173,12 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
-			describe( 'isThereAResorceRecordForThisSubdomain()' , function() {
+			describe( 'isThereAResourceRecordForThisSubdomain()' , function() {
 
 				it( 'returns true for a defined subdomain' , function() {
 
 					expect(
-						service.isThereAResorceRecordForThisSubdomain( 
+						service.isThereAResourceRecordForThisSubdomain( 
 							subdomain = generateSubdomainName( 'exists' )
 						)
 					).toBeTrue();
@@ -155,7 +188,7 @@ component extends='testbox.system.BaseSpec' {
 				it( 'returns false for a fake domain' , function() {
 
 					expect(
-						service.isThereAResorceRecordForThisSubdomain( 
+						service.isThereAResourceRecordForThisSubdomain( 
 							subdomain = generateSubdomainName( 'does-not-exist' )
 						)
 					).toBeFalse();
@@ -171,7 +204,7 @@ component extends='testbox.system.BaseSpec' {
 					example_subdomain = generateSubdomainName( CreateUUID() );
 
 					expect(
-						service.isThereAResorceRecordForThisSubdomain( subdomain = example_subdomain )
+						service.isThereAResourceRecordForThisSubdomain( subdomain = example_subdomain )
 					).toBeFalse();
 
 					service.addAliasSubdomain(
@@ -181,7 +214,7 @@ component extends='testbox.system.BaseSpec' {
 					);
 
 					expect(
-						service.isThereAResorceRecordForThisSubdomain( subdomain = example_subdomain )
+						service.isThereAResourceRecordForThisSubdomain( subdomain = example_subdomain )
 					).toBeTrue();
 
 					service.deleteSubdomain(
@@ -189,7 +222,7 @@ component extends='testbox.system.BaseSpec' {
 					);
 
 					expect(
-						service.isThereAResorceRecordForThisSubdomain( subdomain = example_subdomain )
+						service.isThereAResourceRecordForThisSubdomain( subdomain = example_subdomain )
 					).toBeFalse();
 
 				});

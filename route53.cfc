@@ -58,11 +58,41 @@ component accessors=true extends='aws' {
 
 	}
 
+	private string function getHostedZoneID(
+		required string domain
+	) {
+
+		return getHostedZone(
+			domain = arguments.domain
+		).Id.ListLast( '/' );
+
+	}
+
 	private any function getResourceRecordForSubdomain(
 		required string subdomain
 	) {
+		var target_subdomain = arguments.subdomain & '.';
 
+		var resource_record_sets_request = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ListResourceRecordSetsRequest'
+		)
+			.init( 
+				getHostedZoneID(
+					domain = arguments.subdomain.ListDeleteAt( 1 , '.' )
+				)
+			)
+			.withStartRecordName( target_subdomain );
 
+		var resource_record_set = getRoute53Client()
+			.listResourceRecordSets( resource_record_sets_request )
+			.ResourceRecordSets[1];
+
+		if (
+			resource_record_set.Name == target_subdomain
+		) {
+			return resource_record_set;
+		}
 
 		throw( type = 'route53.subdomain.nonexistant' , detail = arguments.subdomain );
 
@@ -104,20 +134,17 @@ component accessors=true extends='aws' {
 		required string elb_name
 	) {
 
-		var sub_domain = ListFirst( arguments.subdomain , '.' );
-		var tl_domain = ListDeleteAt( arguments.subdomain , 1 , '.' );
+		var tl_domain = arguments.subdomain.ListDeleteAt( 1 , '.' );
 
 		var route53 = getRoute53Client();
 
 		try {
-			var hosted_zone = getHostedZone(
+			var hosted_zone_id = getHostedZoneID(
 				domain = tl_domain
 			);
 		} catch ( route53.domain.nonexistant e ) {
 			throw('Unable to find hosted zone for domain '&tl_domain);
 		}
-
-		var hosted_zone_id = hosted_zone.Id;
 
 		var resource_record_set = CreateObject(
 			'java',
@@ -180,20 +207,17 @@ component accessors=true extends='aws' {
 		required string subdomain
 	) {
 
-		var sub_domain = ListFirst( arguments.subdomain , '.' );
-		var tl_domain = ListDeleteAt( arguments.subdomain , 1 , '.' );
+		var tl_domain = arguments.subdomain.ListDeleteAt( 1 , '.' );
 
 		var route53 = getRoute53Client();
 
 		try {
-			var hosted_zone = getHostedZone(
+			var hosted_zone_id = getHostedZoneID(
 				domain = tl_domain
 			);
 		} catch ( route53.domain.nonexistant e ) {
 			throw('Unable to find hosted zone for domain '&tl_domain);
 		}
-
-		var hosted_zone_id = hosted_zone.Id;
 
 		try {
 			var resource_record_set = getResourceRecordForSubdomain(
