@@ -1,6 +1,6 @@
 component accessors=true extends='aws' {
 
-	property name='dynamodbClient' type='com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient' getter=false setter=false;	
+	property name='myClient' type='com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient' getter=false setter=false;	
 	property name='dynamodb' type='com.amazonaws.services.dynamodbv2.document.DynamoDB' getter=false setter=false;	
 
 	property name='tables' type='struct' getter=false setter=false;
@@ -8,7 +8,7 @@ component accessors=true extends='aws' {
 	public dynamodb function init(
 		required string account,
 		required string secret,
-		required string region
+		string region
 	) {
 
 		super.init(
@@ -17,31 +17,27 @@ component accessors=true extends='aws' {
 
 		variables.tables = {};
 
-		variables.dynamodbClient = CreateObject(
+		variables.myClient = CreateObject(
 			'java',
 			'com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient'
 		).init(
 			getCredentials()
 		);
 
-		variables.dynamodbClient.configureRegion(
-			getRegion(
-				arguments.region
-			)
-		);
+		if (
+			StructKeyExists( arguments , 'region' ) 
+		) {
+			setRegion( region = arguments.region );
+		}
 
 		variables.dynamodb = CreateObject(
 			'java',
 			'com.amazonaws.services.dynamodbv2.document.DynamoDB'
 		).init(
-			getDynamodbClient()
+			getMyClient()
 		);
 
 		return this;
-	}
-
-	private function getDynamodbClient() {
-		return variables.dynamodbClient;
 	}
 
 	private function getDynamodb() {

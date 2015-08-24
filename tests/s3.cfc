@@ -26,9 +26,9 @@ component extends='testbox.system.BaseSpec' {
 
 			it( 'has an S3 client stored' , function() {
 
-				makePublic( service , 'getS3Client' , 'getS3Client' );
+				makePublic( service , 'getMyClient' , 'getMyClient' );
 
-				actual = service.getS3Client();
+				actual = service.getMyClient();
 
 				expect(
 					actual.getClass().getName()

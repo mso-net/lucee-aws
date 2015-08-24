@@ -23,6 +23,8 @@ component {
 	            'elb_region': '', 		// region that the elb_name is in
 	            'lambda_method': '', 	// name of a lambda method that takes in {key1='',key2='',key3=''} and returns a concat string
 	            'route53_tld': '', 		// a hosted zone domain name i.e. something.com
+	            'ses_from': '', 		// email address that can send from SES for you
+	            'ses_to': '',			// email address that can receive email from SES for you
 	            's3_bucket': ''  		// name of an s3 bucket
 	        };
 

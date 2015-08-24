@@ -1,6 +1,6 @@
 component accessors=true extends='aws' {
 
-	property name='s3Client' type='com.amazonaws.services.s3.AmazonS3Client' getter=false setter=false;	
+	property name='myClient' type='com.amazonaws.services.s3.AmazonS3Client' getter=false setter=false;	
 	property name='bucketACL' type='com.amazonaws.services.s3.model.AccessControlList' getter=false setter=false;	
 	property name='bucket' type='string' getter=false setter=false;	
 	property name='basepath' type='string' getter=false setter=false;	
@@ -17,7 +17,7 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.s3Client = CreateObject(
+		variables.myClient = CreateObject(
 			'java',
 			'com.amazonaws.services.s3.AmazonS3Client'
 		).init(
@@ -29,16 +29,12 @@ component accessors=true extends='aws' {
 
 		return this;
 	}
-
-	private any function getS3Client() {
-		return variables.s3Client;
-	}
-
+	
 	private any function getBucketACL() {
 		if (
 			!IsDefined( 'variables.bucketACL' )
 		) {
-			variables.bucketACL = getS3Client().getBucketACL( 
+			variables.bucketACL = getMyClient().getBucketACL( 
 				variables.bucket 
 			);
 		}
@@ -75,7 +71,7 @@ component accessors=true extends='aws' {
 			empty_string.getBytes('UTF-8')
 		);
 
-		getS3Client().putObject(
+		getMyClient().putObject(
 			variables.bucket,
 			getKeyFromPath(
 				key = arguments.key
@@ -84,7 +80,7 @@ component accessors=true extends='aws' {
 			object_metadata
 		);
 
-		getS3Client().setObjectAcl(
+		getMyClient().setObjectAcl(
 			variables.bucket,
 			getKeyFromPath(
 				key = arguments.key
@@ -98,7 +94,7 @@ component accessors=true extends='aws' {
 	public s3 function deleteObject(
 		required string key
 	) {
-		getS3Client().deleteObject(
+		getMyClient().deleteObject(
 			variables.bucket,
 			getKeyFromPath(
 				key = arguments.key
@@ -115,7 +111,7 @@ component accessors=true extends='aws' {
 		);
 		
 		try {
-			return getS3Client().getObjectMetadata(
+			return getMyClient().getObjectMetadata(
 				variables.bucket,
 				full_key
 			);
@@ -138,7 +134,7 @@ component accessors=true extends='aws' {
 		);
 
 		try {
-			var object = getS3Client().getObject(
+			var object = getMyClient().getObject(
 				variables.bucket,
 				full_key
 			);
@@ -202,7 +198,7 @@ component accessors=true extends='aws' {
 			binary_data
 		);
 		
-		getS3Client().putObject(
+		getMyClient().putObject(
 			variables.bucket,
 			getKeyFromPath(
 				key = arguments.key
@@ -250,7 +246,7 @@ component accessors=true extends='aws' {
 				break;
 		}
 
-		getS3Client().setObjectAcl(
+		getMyClient().setObjectAcl(
 			variables.bucket,
 			getKeyFromPath(
 				key = arguments.key

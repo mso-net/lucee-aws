@@ -1,32 +1,34 @@
 component accessors=true extends='aws' {
 
-	property name='ELBClient' type='com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClient' getter=false setter=false;	
+	property name='myClient' type='com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClient' getter=false setter=false;	
 
 	public elb function init(
 		required string account,
-		required string secret
+		required string secret,
+		string region
 	) {
 
 		super.init(
 			argumentCollection = arguments
 		);
 
-		variables.ELBClient = CreateObject(
+		variables.myClient = CreateObject(
 			'java',
 			'com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClient'
 		).init(
 			getCredentials()
 		);
 
+		if (
+			StructKeyExists( arguments , 'region' ) 
+		) {
+			setRegion( region = arguments.region );
+		}
+
 		return this;
 	}
 
-	private any function getELBClient() {
-		return variables.ELBClient;
-	}
-
 	public function getConfig(
-		required string region,
 		required string name
 	) {
 
@@ -38,18 +40,9 @@ component accessors=true extends='aws' {
 				[ arguments.name ]
 			);
 
-		// This is duplicating because setRegion is not threadsafe
-		var rqELBClient = Duplicate( variables.ELBClient );
-		rqELBClient.setRegion(
-			getRegion(
-				arguments.region
-			)
-		);
-
-
 		try {
 
-			describeLoadBalancerResponse = rqELBClient
+			describeLoadBalancerResponse = getMyClient()
 				.describeLoadBalancers(
 					describeLoadBalancerRequest
 				)

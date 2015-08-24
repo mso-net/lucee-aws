@@ -9,7 +9,8 @@ component extends='testbox.system.BaseSpec' {
 			beforeEach( function( currentSpec ) {
 				service = new aws.elb(
 					account = application.aws_settings.aws_accountid,
-					secret = application.aws_settings.aws_secretkey
+					secret = application.aws_settings.aws_secretkey,
+					region = application.aws_settings.elb_region
 				);
 			});
 
@@ -25,9 +26,9 @@ component extends='testbox.system.BaseSpec' {
 
 			it( 'has a ELB client stored' , function() {
 
-				makePublic( service , 'getELBClient' , 'getELBClient' );
+				makePublic( service , 'getMyClient' , 'getMyClient' );
 
-				actual = service.getELBClient();
+				actual = service.getMyClient();
 
 				expect(
 					actual.getClass().getName()
@@ -42,7 +43,6 @@ component extends='testbox.system.BaseSpec' {
 				it( 'returns expected values for a defined load balancer' , function() {
 
 					actual = service.getConfig( 
-						region = application.aws_settings.elb_region,
 						name = application.aws_settings.elb_name
 					);
 
@@ -62,7 +62,6 @@ component extends='testbox.system.BaseSpec' {
 
 					expect( function() {
 						service.getConfig( 
-							region = application.aws_settings.elb_region,
 							name = 'some-fake-load-balancer'
 						);
 					} ).toThrow( 'elb.nonexistant' );
