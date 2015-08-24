@@ -45,7 +45,44 @@ component accessors=true extends='aws' {
 		return getMyClient()
 			.listIdentities()
 			.getIdentities();
-			
+
+	}
+
+	public ses function verifyEmailAddress(
+		required string email
+	) {
+
+		var verify_email = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.VerifyEmailIdentityRequest'
+		)
+			.init()
+			.withEmailAddress( arguments.email );
+
+		getMyClient().verifyEmailIdentity(
+			verify_email
+		);
+
+		return this;
+	}
+
+	public ses function deleteVerifiedEmailAddress(
+		required string email
+	) {
+
+		var delete_email = CreateObject(
+			'java',
+			'com.amazonaws.services.simpleemail.model.DeleteIdentityRequest'
+		)
+			.init()
+			.withIdentity( arguments.email );
+
+		getMyClient().deleteIdentity(
+			delete_email
+		);
+
+
+		return this;
 	}
 
 }

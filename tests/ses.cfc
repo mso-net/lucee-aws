@@ -63,10 +63,46 @@ component extends='testbox.system.BaseSpec' {
 
 					actual = service.listVerifiedEmailAddresses();
 
-					expect( actual ).toHaveLength( 2 );
-
 					expect( actual ).toInclude( application.aws_settings.ses_to );
 					expect( actual ).toInclude( application.aws_settings.ses_from );
+
+				});
+
+			});
+
+			describe( 'verifyEmailAddress() and deleteVerifiedEmailAddress()' , function() {
+
+				it( 'can verify an email address and then delete it' , function() {
+
+					var test_email = GetTickCount()&'@lucee-aws.com';
+
+					expect( service.listVerifiedEmailAddresses() ).notToInclude( test_email );
+
+					service.verifyEmailAddress(
+						email = test_email
+					);
+
+					expect( service.listVerifiedEmailAddresses() ).toInclude( test_email );
+
+					service.deleteVerifiedEmailAddress(
+						email = test_email
+					);
+
+					expect( service.listVerifiedEmailAddresses() ).notToInclude( test_email );
+
+				});
+
+				it( 'just silently does nothing for a nonexistant email' , function() {
+
+					var test_email = 'is_not_verified@lucee-aws.com';
+
+					expect( service.listVerifiedEmailAddresses() ).notToInclude( test_email );
+
+					service.deleteVerifiedEmailAddress(
+						email = test_email
+					);
+
+					expect( service.listVerifiedEmailAddresses() ).notToInclude( test_email );
 
 				});
 
