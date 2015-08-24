@@ -169,11 +169,7 @@ component accessors=true extends='aws' {
 	}
 
 	public ses function sendRawEmail(
-		required string from,
-		required string to,
-		required string data,
-		string cc = '',
-		string bcc = ''
+		required string data
 	) {
 
 		var email_message = CreateObject(
