@@ -65,8 +65,8 @@ component extends='testbox.system.BaseSpec' {
 
 					expect( actual ).toHaveLength( 2 );
 
-					expect( actual ).toContain( application.aws_settings.ses_to );
-					expect( actual ).toContain( application.aws_settings.ses_from );
+					expect( actual ).toInclude( application.aws_settings.ses_to );
+					expect( actual ).toInclude( application.aws_settings.ses_from );
 
 				});
 

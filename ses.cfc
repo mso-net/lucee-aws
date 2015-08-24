@@ -27,7 +27,7 @@ component accessors=true extends='aws' {
 
 		return this;
 	}
-	
+
 	public struct function getSendQuota() {
 
 		var send_quota = getMyClient().getSendQuota();
@@ -42,17 +42,10 @@ component accessors=true extends='aws' {
 
 	public array function listVerifiedEmailAddresses() {
 
-		var response = [];
-
-		var list_identities = getMyClient().listIdentities();
-
-		dump( list_identities );
-
-		dump( list_identities.getIdentities().toString() );
-
-
-		return response;
-
+		return getMyClient()
+			.listIdentities()
+			.getIdentities();
+			
 	}
 
 }
