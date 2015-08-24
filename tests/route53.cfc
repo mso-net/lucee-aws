@@ -83,7 +83,7 @@ component extends='testbox.system.BaseSpec' {
 				it( 'returns hosted zone object for a defined subdomain' , function() {
 
 					actual = service.getResourceRecordForSubdomain( 
-						domain = generateSubdomainName( 'exists' )
+						subdomain = generateSubdomainName( 'exists' )
 					);
 					
 					expect(
@@ -98,7 +98,7 @@ component extends='testbox.system.BaseSpec' {
 
 					expect( function() {
 						service.getResourceRecordForSubdomain( 
-							domain = generateSubdomainName( 'does-not-exist' )
+							subdomain = generateSubdomainName( 'does-not-exist' )
 						);
 					} ).toThrow( 'route53.subdomain.nonexistant' );
 
@@ -108,7 +108,7 @@ component extends='testbox.system.BaseSpec' {
 
 					expect( function() {
 						service.getResourceRecordForSubdomain( 
-							domain = 'i.really-dont-exist.com'
+							subdomain = 'i.really-dont-exist.com'
 						);
 					} ).toThrow( 'route53.domain.nonexistant' );
 

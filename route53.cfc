@@ -36,8 +36,16 @@ component accessors=true extends='aws' {
 
 		var target_domain = arguments.domain & '.';
 
+		var hosted_zones_request = CreateObject(
+			'java',
+			'com.amazonaws.services.route53.model.ListHostedZonesByNameRequest'
+		)
+			.init()
+			.withDNSName( target_domain )
+			.withMaxItems( 1 );
+
 		var hosted_zones = getRoute53Client()
-			.listHostedZones()
+			.listHostedZonesByName(hosted_zones_request)
 			.HostedZones;
 
 		for( var hosted_zone in hosted_zones ) {
