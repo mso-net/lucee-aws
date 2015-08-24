@@ -35,18 +35,18 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
-			describe( 'getHostedZoneForDomain()' , function() {
+			describe( 'getHostedZone()' , function() {
 
 				beforeEach( function() {
 
-					makePublic( service , 'getHostedZoneForDomain' , 'getHostedZoneForDomain' );
+					makePublic( service , 'getHostedZone' , 'getHostedZone' );
 
 				});
 
 
-				it( 'returns true for a defined top level domain' , function() {
+				it( 'returns hosted zone object for a defined top level domain' , function() {
 
-					actual = service.getHostedZoneForDomain( 
+					actual = service.getHostedZone( 
 						domain = application.aws_settings.route53_tld
 					);
 					
@@ -61,7 +61,7 @@ component extends='testbox.system.BaseSpec' {
 				it( 'errors for a fake domain' , function() {
 
 					expect( function() {
-						service.getHostedZoneForDomain( 
+						service.getHostedZone( 
 							domain = 'some-fake-domain.com'
 						);
 					} ).toThrow( 'route53.domain.nonexistant' );
@@ -70,26 +70,109 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
-			describe( 'addAliasSubdomain() and deleteAliasSubdomain()' , function() {
+
+			describe( 'getResourceRecordForSubdomain()' , function() {
 
 				beforeEach( function() {
 
-					makePublic( service , 'getHostedZoneForDomain' , 'getHostedZoneForDomain' );
+					makePublic( service , 'getResourceRecordForSubdomain' , 'getResourceRecordForSubdomain' );
 
 				});
 
+
+				it( 'returns hosted zone object for a defined subdomain' , function() {
+
+					actual = service.getResourceRecordForSubdomain( 
+						domain = generateSubdomainName( 'exists' )
+					);
+					
+					expect(
+						actual.getClass().getName()
+					).toBe(
+						'com.amazonaws.services.route53.model.ResourceRecordSet'
+					);
+
+				});
+
+				it( 'errors for a fake subdomain' , function() {
+
+					expect( function() {
+						service.getResourceRecordForSubdomain( 
+							domain = generateSubdomainName( 'does-not-exist' )
+						);
+					} ).toThrow( 'route53.subdomain.nonexistant' );
+
+				});
+
+				it( 'errors for a fake domain' , function() {
+
+					expect( function() {
+						service.getResourceRecordForSubdomain( 
+							domain = 'i.really-dont-exist.com'
+						);
+					} ).toThrow( 'route53.domain.nonexistant' );
+
+				});
+
+			});
+
+			describe( 'isThereAHostedZoneForThisDomain()' , function() {
+
+				it( 'returns true for a defined top level domain' , function() {
+
+					expect(
+						service.isThereAHostedZoneForThisDomain( 
+							domain = application.aws_settings.route53_tld
+						)
+					).toBeTrue();
+
+				});
+
+				it( 'returns false for a fake domain' , function() {
+
+					expect(
+						service.isThereAHostedZoneForThisDomain( 
+							domain = 'some-fake-domain.com'
+						)
+					).toBeFalse();
+
+				});
+
+			});
+
+			describe( 'isThereAResorceRecordForThisSubdomain()' , function() {
+
+				it( 'returns true for a defined subdomain' , function() {
+
+					expect(
+						service.isThereAResorceRecordForThisSubdomain( 
+							subdomain = generateSubdomainName( 'exists' )
+						)
+					).toBeTrue();
+
+				});
+
+				it( 'returns false for a fake domain' , function() {
+
+					expect(
+						service.isThereAResorceRecordForThisSubdomain( 
+							subdomain = generateSubdomainName( 'does-not-exist' )
+						)
+					).toBeFalse();
+
+				});
+
+			});
+
+			describe( 'addAliasSubdomain() and deleteAliasSubdomain()' , function() {
+
 				it( 'can alias a subdomain using supplied hostedZoneID and ELB target and then delete it' , function() {
 
-					var count_resources = function() {
-						return service.getHostedZoneForDomain( 
-								domain = application.aws_settings.route53_tld
-							)
-							.getResourceRecordSetCount();
-					};
-
-					initial_number_of_resource_records = count_resources();
-
 					example_subdomain = generateSubdomainName( CreateUUID() );
+
+					expect(
+						service.isThereAResorceRecordForThisSubdomain( subdomain = example_subdomain )
+					).toBeFalse();
 
 					service.addAliasSubdomain(
 						subdomain = example_subdomain,
@@ -98,22 +181,16 @@ component extends='testbox.system.BaseSpec' {
 					);
 
 					expect(
-						count_resources()
-					).toBe(
-						initial_number_of_resource_records + 1
-					);
+						service.isThereAResorceRecordForThisSubdomain( subdomain = example_subdomain )
+					).toBeTrue();
 
 					service.deleteAliasSubdomain(
-						subdomain = example_subdomain,
-						elb_region = application.aws_settings.elb_region,
-						elb_name = application.aws_settings.elb_name
+						subdomain = example_subdomain
 					);
 
 					expect(
-						count_resources()
-					).toBe(
-						initial_number_of_resource_records
-					);
+						service.isThereAResorceRecordForThisSubdomain( subdomain = example_subdomain )
+					).toBeFalse();
 
 				});
 
