@@ -25,4 +25,16 @@ component accessors=true extends='aws' {
 		return variables.SESClient;
 	}
 
+	public struct function getSendQuota() {
+
+		var send_quota = getSESClient().getSendQuota();
+
+		return {
+			'Max24HourSend': send_quota.Max24HourSend,
+			'MaxSendRate': send_quota.MaxSendRate,
+			'SentLast24Hours': send_quota.SentLast24Hours
+		};
+
+	}
+
 }

@@ -35,6 +35,28 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
+			describe( 'getSendQuota()' , function() {
+
+				it( 'returns the current users quota' , function() {
+
+					actual = service.getSendQuota();
+
+					expect( actual ).toHaveKey( 'Max24HourSend' );
+					expect( actual ).toHaveKey( 'MaxSendRate' );
+					expect( actual ).toHaveKey( 'SentLast24Hours' );
+
+					expect( actual.Max24HourSend ).toBeNumeric();
+					expect( actual.MaxSendRate ).toBeNumeric();
+					expect( actual.SentLast24Hours ).toBeNumeric();
+
+					expect( actual.Max24HourSend ).toBe( 200 );
+					expect( actual.MaxSendRate ).toBe( 1 );
+
+				});
+
+
+			});
+
 		});
 
 	}
