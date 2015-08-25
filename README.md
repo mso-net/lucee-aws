@@ -18,7 +18,11 @@ this.javaSettings = {
 };
 ```
 
-The contents of /aws-java-sdk are just the jar files from [http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip](http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip).  I am looking for a better way of handling this dependency but for now I'm concentrating on other tasks.
+The contents of /aws-java-sdk are just the jar files from [http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip](http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip).  I am looking for a better way of handling this dependency but for now I'm concentrating on other tasks. 
+
+**Important** There are currently some conflicts between the AWS Java SDK and Lucee.  At present I would advise replacing the Lucee/CommandBox version of joda-time.jar with the version within the AWS Java SDK.  If you don't do this you will see issues especially with S3.  Additionally the javax-mailer jar conflicts with the one in Lucee, in this case you can delete the one from the AWS Java SDK - I don't think I'm actually making use of that yet.
+
+Again I am looking for a better solution here, but for now this provides a quick workaround.
 
 ## Usage
 
