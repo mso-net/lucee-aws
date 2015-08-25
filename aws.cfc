@@ -47,7 +47,7 @@ component accessors=true {
 	public function setRegion(
 		string region = 'eu-west-1'
 	) {
-		getMyClient().setRegion(
+		getMyClient().configureRegion(
 			getRegion(
 				arguments.region
 			)
