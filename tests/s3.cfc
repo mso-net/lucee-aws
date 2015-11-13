@@ -137,7 +137,8 @@ component extends='testbox.system.BaseSpec' {
 
 
 			describe( 'directoryList()' , function() {
-				it( 'returns expected files for bucket' ) {
+
+				it( 'returns expected files for bucket' , function() {
 
 					actual = service.directoryList();
 
@@ -151,9 +152,9 @@ component extends='testbox.system.BaseSpec' {
 					expect( actual[2].key ).toBe('unittest/logo.png');
 					expect( actual[2].type ).toBe('item');
 					expect( actual[2].name ).toBe('logo.png');
-				}
+				});
 
-				it( 'returns expected files for sub dir' ) {
+				it( 'returns expected files for sub dir' , function() {
 
 					actual = service.directoryList( directory = 'unittest/' );
 
@@ -170,15 +171,15 @@ component extends='testbox.system.BaseSpec' {
 					expect( actual[1].type ).toBe('item');
 					expect( actual[1].name ).toBe('logo.png');
 
-				}
+				});
 
-				it ( 'returns empty for non-existant dir' ) {
+				it ( 'returns empty for non-existant dir', function() {
 
 					actual = service.directoryList( directory = 'nonexistant/' );
 
 					expect( actual ).toBeArray();
 					expect( actual ).toBeEmpty();
-				}
+				});
 
 			});
 
