@@ -135,6 +135,54 @@ component extends='testbox.system.BaseSpec' {
 
 			});
 
+
+			describe( 'directoryList()' , function() {
+				it( 'returns expected files for bucket' ) {
+
+					actual = service.directoryList();
+
+					expect( actual ).toBeArray();
+					expect( actual ).toHaveLength(2);
+
+					expect( actual[1].key ).toBe('unittest/');
+					expect( actual[1].type ).toBe('folder');
+					expect( actual[1].name ).toBe('unittest/');
+
+					expect( actual[2].key ).toBe('unittest/logo.png');
+					expect( actual[2].type ).toBe('item');
+					expect( actual[2].name ).toBe('logo.png');
+				}
+
+				it( 'returns expected files for sub dir' ) {
+
+					actual = service.directoryList( directory = 'unittest/' );
+
+					expect( actual ).toBeArray();
+					expect( actual ).toHaveLength(1);
+
+					expect( actual[1] ).toHaveKey( 'lastModified' );
+					expect( actual[1] ).toHaveKey( 'size' );
+
+					expect( actual[1].lastModified ).toBeDate();
+					expect( actual[1].size ).toBeNumeric();
+
+					expect( actual[1].key ).toBe('logo.png');
+					expect( actual[1].type ).toBe('item');
+					expect( actual[1].name ).toBe('logo.png');
+
+				}
+
+				it ( 'returns empty for non-existant dir' ) {
+
+					actual = service.directoryList( directory = 'nonexistant/' );
+
+					expect( actual ).toBeArray();
+					expect( actual ).toBeEmpty();
+				}
+
+			});
+
+
 			describe( 'makeDirectory() and deleteObject()' , function() {
 
 				it( 'makes a new random directory and deletes it' , function() {

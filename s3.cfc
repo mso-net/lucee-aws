@@ -55,6 +55,36 @@ component accessors=true extends='aws' {
 		}
 	}
 
+	public array function directoryList(
+		string directory = ''
+	) {
+
+		var array_of_keys = [];
+		var object_listing = getMyClient().listObjects( variables.bucket, arguments.directory );
+
+		do {
+			for (var summary in object_listing.getObjectSummaries() ) {
+
+				var key = summary.getKey();
+
+				if ( key != arguments.directory ) {
+					array_of_keys.add({
+						'key': key,
+						'name': ReplaceNoCase(key, arguments.directory, ''),
+						'type': ( Right(key,1) == '/' )?'folder':'item',
+						'size': summary.getSize(),
+						'lastModified': summary.getLastModified()
+					});				
+				}
+			}
+
+			getMyClient().listNextBatchOfObjects(object_listing);				 	
+
+		} while ( object_listing.isTruncated() );
+
+		return array_of_keys;
+	}
+
 	public s3 function makeDirectory(
 		required string key
 	) {
