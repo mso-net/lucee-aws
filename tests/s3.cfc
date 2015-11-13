@@ -151,7 +151,7 @@ component extends='testbox.system.BaseSpec' {
 
 					expect( actual[2].key ).toBe('unittest/logo.png');
 					expect( actual[2].type ).toBe('item');
-					expect( actual[2].name ).toBe('logo.png');
+					expect( actual[2].name ).toBe('unittest/logo.png');
 				});
 
 				it( 'returns expected files for sub dir' , function() {
