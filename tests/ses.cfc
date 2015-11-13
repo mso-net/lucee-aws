@@ -52,8 +52,8 @@ component extends='testbox.system.BaseSpec' {
 					expect( actual.MaxSendRate ).toBeNumeric();
 					expect( actual.SentLast24Hours ).toBeNumeric();
 
-					expect( actual.Max24HourSend ).toBe( 200 );
-					expect( actual.MaxSendRate ).toBe( 1 );
+					expect( actual.Max24HourSend ).toBe( 50000 );
+					expect( actual.MaxSendRate ).toBe( 14 );
 
 				});
 
