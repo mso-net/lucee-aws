@@ -167,7 +167,7 @@ component extends='testbox.system.BaseSpec' {
 					expect( actual[1].lastModified ).toBeDate();
 					expect( actual[1].size ).toBeNumeric();
 
-					expect( actual[1].key ).toBe('logo.png');
+					expect( actual[1].key ).toBe('unittest/logo.png');
 					expect( actual[1].type ).toBe('item');
 					expect( actual[1].name ).toBe('logo.png');
 
