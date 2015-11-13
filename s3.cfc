@@ -70,7 +70,7 @@ component accessors=true extends='aws' {
 				if ( key != arguments.directory ) {
 					array_of_keys.add({
 						'key': key,
-						'name': ReplaceNoCase(key, arguments.directory, ''),
+						'name': ( Len( arguments.directory ) > 0 ) ? ReplaceNoCase(key, arguments.directory, '') : key,
 						'type': ( Right(key,1) == '/' )?'folder':'item',
 						'size': summary.getSize(),
 						'lastModified': summary.getLastModified()
