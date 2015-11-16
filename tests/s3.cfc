@@ -145,18 +145,22 @@ component extends='testbox.system.BaseSpec' {
 					expect( actual ).toBeArray();
 					expect( actual ).toHaveLength(2);
 
-					expect( actual[1].key ).toBe('unittest/');
+					expect( actual[1].key ).toBe('list-me/');
 					expect( actual[1].type ).toBe('folder');
-					expect( actual[1].name ).toBe('unittest/');
+					expect( actual[1].name ).toBe('list-me/');
 
-					expect( actual[2].key ).toBe('unittest/logo.png');
+					expect( actual[2].key ).toBe('list-me/Square-Dennis-Cheesy.jpg');
 					expect( actual[2].type ).toBe('item');
-					expect( actual[2].name ).toBe('unittest/logo.png');
+					expect( actual[2].name ).toBe('list-me/Square-Dennis-Cheesy.jpg');
+
+					expect( actual[3].key ).toBe('logo.png');
+					expect( actual[3].type ).toBe('item');
+					expect( actual[3].name ).toBe('logo.png');
 				});
 
 				it( 'returns expected files for sub dir' , function() {
 
-					actual = service.directoryList( directory = 'unittest/' );
+					actual = service.directoryList( directory = 'list-me/' );
 
 					expect( actual ).toBeArray();
 					expect( actual ).toHaveLength(1);
@@ -167,9 +171,9 @@ component extends='testbox.system.BaseSpec' {
 					expect( actual[1].lastModified ).toBeDate();
 					expect( actual[1].size ).toBeNumeric();
 
-					expect( actual[1].key ).toBe('unittest/logo.png');
+					expect( actual[1].key ).toBe('list-me/Square-Dennis-Cheesy.jpg');
 					expect( actual[1].type ).toBe('item');
-					expect( actual[1].name ).toBe('logo.png');
+					expect( actual[1].name ).toBe('Square-Dennis-Cheesy.jpg');
 
 				});
 

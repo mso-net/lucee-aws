@@ -54,23 +54,35 @@ component accessors=true extends='aws' {
 			return false;
 		}
 	}
-
+	
 	public array function directoryList(
 		string directory = ''
 	) {
 
 		var array_of_keys = [];
-		var object_listing = getMyClient().listObjects( variables.bucket, arguments.directory );
+		var full_path = variables.basepath & arguments.directory & '/';
+		var strip_basepath = ( Len( variables.basepath ) > 0 );
+		var strip_directory = ( Len( arguments.directory ) > 0 );
+
+		var object_listing = getMyClient().listObjects( variables.bucket, full_path );
 
 		do {
 			for (var summary in object_listing.getObjectSummaries() ) {
 
 				var key = summary.getKey();
+				if ( strip_basepath ) {
+					key = REReplace( key , '^'&variables.basepath , '' );
+				}
 
-				if ( key != arguments.directory ) {
+				var name = key;
+				if ( strip_directory ) {
+					name = REReplace( key , '^'&arguments.directory & '/' , '' );
+				}
+
+				if ( Len( name ) > 0 ) {
 					array_of_keys.add({
 						'key': key,
-						'name': ( Len( arguments.directory ) > 0 ) ? ReplaceNoCase(key, arguments.directory, '') : key,
+						'name': name,
 						'type': ( Right(key,1) == '/' )?'folder':'item',
 						'size': summary.getSize(),
 						'lastModified': summary.getLastModified()
