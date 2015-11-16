@@ -143,7 +143,7 @@ component extends='testbox.system.BaseSpec' {
 					actual = service.directoryList();
 
 					expect( actual ).toBeArray();
-					expect( actual ).toHaveLength(2);
+					expect( actual ).toHaveLength(3);
 
 					expect( actual[1].key ).toBe('list-me/');
 					expect( actual[1].type ).toBe('folder');
