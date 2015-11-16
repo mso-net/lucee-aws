@@ -74,10 +74,7 @@ component accessors=true extends='aws' {
 					key = REReplace( key , '^'&variables.basepath , '' );
 				}
 
-				var name = key;
-				if ( strip_directory ) {
-					name = REReplace( key , '^'&arguments.directory & '/' , '' );
-				}
+				var name = REReplace( key , '^'&arguments.directory & '/' , '' );
 
 				if ( Len( name ) > 0 ) {
 					array_of_keys.add({
