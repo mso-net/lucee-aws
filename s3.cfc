@@ -60,9 +60,19 @@ component accessors=true extends='aws' {
 	) {
 
 		var array_of_keys = [];
-		var full_path = variables.basepath & arguments.directory & '/';
+
+		var directory_with_trailing_slash = arguments.directory;
+
+		if ( 
+			Len( directory_with_trailing_slash ) > 0 
+			&& 
+			Right( arguments.directory , 1 ) != '/'
+		) {
+			directory_with_trailing_slash &= '/';
+		}
+
+		var full_path = variables.basepath & directory_with_trailing_slash;
 		var strip_basepath = ( Len( variables.basepath ) > 0 );
-		var strip_directory = ( Len( arguments.directory ) > 0 );
 
 		var object_listing = getMyClient().listObjects( variables.bucket, full_path );
 
@@ -71,10 +81,10 @@ component accessors=true extends='aws' {
 
 				var key = summary.getKey();
 				if ( strip_basepath ) {
-					key = REReplace( key , '^'&variables.basepath , '' );
+					key = REReplace( key , '^' & variables.basepath , '' );
 				}
 
-				var name = REReplace( key , '^'&arguments.directory & '/' , '' );
+				var name = REReplace( key , '^' & directory_with_trailing_slash , '' );
 
 				if ( Len( name ) > 0 ) {
 					array_of_keys.add({
