@@ -1,6 +1,6 @@
 component accessors=true extends='aws' {
 
-	property name='myClient' type='com.amazonaws.services.lambda.AWSLambdaClient' getter=false setter=false;	
+	property name='myClient' type='com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient' getter=false setter=false;	
 
 	public ses function init(
 		required string account,
