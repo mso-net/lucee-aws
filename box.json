@@ -18,7 +18,7 @@
         }
     ],
     "devDependencies":{
-        "testbox":"2.0.0"
+        "testbox":"github:Ortus-Solutions/TestBox"
     },
     "installPaths":{
         "testbox":"testbox"
