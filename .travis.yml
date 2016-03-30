@@ -10,6 +10,7 @@ install:
 - sudo apt-get install -q -y --force-yes commandbox
 - box install
 before_script:
+- sudo rm -f /root/.CommandBox/lib/joda-time-*.jar
 - chmod +x test
 script:
 - "./test"
