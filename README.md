@@ -8,15 +8,7 @@ Lucee extension to provide simpler access to common AWS commands through the AWS
 
 The easiest way to install this at present is to use CommandBox.  To install with CommandBox 2.1+ simply do the following.
 
-1. `box install mso-net/lucee-aws --production`
-2. Add the following to your Application.cfc
-```
-this.javaSettings = {
-    loadPaths: [
-        '/aws/aws-java-sdk/'
-    ]
-};
-```
+`box install mso-net/lucee-aws --production`
 
 The contents of /aws-java-sdk are just the jar files from [http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip](http://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip).  I am looking for a better way of handling this dependency but for now I'm concentrating on other tasks. 
 

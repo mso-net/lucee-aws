@@ -5,12 +5,6 @@ component {
 	this.mappings[ '/tests'   ] = ExpandPath( './' );
 	this.mappings[ '/aws'   ] = ExpandPath( '../' );
 
-	this.javaSettings = {
-		loadPaths: [
-			'../aws-java-sdk/'
-		]
-	};
-
 	public boolean function onApplicationStart() {
 
 		var env = CreateObject( 'java' , 'java.lang.System' ).getenv();

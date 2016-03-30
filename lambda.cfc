@@ -12,10 +12,7 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateObject(
-			'java',
-			'com.amazonaws.services.lambda.AWSLambdaClient'
-		).init(
+		variables.myClient = CreateAWSObject( 'services.lambda.AWSLambdaClient' ).init(
 			getCredentials()
 		);
 
@@ -33,10 +30,7 @@ component accessors=true extends='aws' {
 		required struct payload
 	) {
 
-		var invoke_request = CreateObject(
-			'java',
-			'com.amazonaws.services.lambda.model.InvokeRequest'
-		)
+		var invoke_request = CreateAWSObject( 'services.lambda.model.InvokeRequest' )
 			.init()
 			.withFunctionName( arguments.method )
 			.withInvocationType( 'RequestResponse' )

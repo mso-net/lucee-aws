@@ -17,10 +17,7 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateObject(
-			'java',
-			'com.amazonaws.services.s3.AmazonS3Client'
-		).init(
+		variables.myClient = CreateAWSObject( 'services.s3.AmazonS3Client' ).init(
 			getCredentials()
 		);
 
@@ -107,10 +104,7 @@ component accessors=true extends='aws' {
 	public s3 function makeDirectory(
 		required string key
 	) {
-		var object_metadata = CreateObject(
-			'java',
-			'com.amazonaws.services.s3.model.ObjectMetadata'
-		).init();
+		var object_metadata = CreateAWSObject( 'services.s3.model.ObjectMetadata' ).init();
 
 		var empty_string = '';
 		var empty_file = CreateObject( 
@@ -234,10 +228,7 @@ component accessors=true extends='aws' {
 		var binary_data = BinaryDecode( encoded_data.ListLast( ',' ) , encoded_data.ListFirst( ',' ) );
 		var mime_type = arguments.object.ListFirst( ';' ).ListLast( ':' );
 
-		var object_metadata = CreateObject(
-			'java',
-			'com.amazonaws.services.s3.model.ObjectMetadata'
-		).init();
+		var object_metadata = CreateAWSObject( 'services.s3.model.ObjectMetadata' ).init();
 		object_metadata.setContentType( mime_type );
 
 		var input_stream = CreateObject( 
@@ -278,10 +269,7 @@ component accessors=true extends='aws' {
 			case 'PublicRead':
 			case 'PublicReadWrite':
 
-				acl = CreateObject(
-						'java',
-						'com.amazonaws.services.s3.model.CannedAccessControlList'
-					)
+				acl = CreateAWSObject( 'services.s3.model.CannedAccessControlList' )
 					.valueOf( arguments.acl );
 
 				break;

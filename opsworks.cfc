@@ -13,10 +13,7 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.opsworksClient = CreateObject(
-			'java',
-			'com.amazonaws.services.opsworks.AWSOpsWorksClient'
-		).init(
+		variables.opsworksClient = CreateAWSObject( 'services.opsworks.AWSOpsWorksClient' ).init(
 			getCredentials()
 		);
 
@@ -34,10 +31,7 @@ component accessors=true extends='aws' {
 	) {
 
 		for ( var r in arguments.opsworksClient.describeStacks(
-			CreateObject(
-				'java',
-				'com.amazonaws.services.opsworks.model.DescribeStacksRequest'
-			).init()
+			CreateAWSObject( 'services.opsworks.model.DescribeStacksRequest' ).init()
 		).getStacks() ) {
 			if (
 				r.getName() == arguments.stack
@@ -57,17 +51,12 @@ component accessors=true extends='aws' {
 		required string recipe
 	) {
 
-		var deploymentRequest = CreateObject(
-			'java',
-			'com.amazonaws.services.opsworks.model.CreateDeploymentRequest'
-		).init();
+		var deploymentRequest = CreateAWSObject( 'services.opsworks.model.CreateDeploymentRequest' ).init();
 
-		var deploymentCommand = CreateObject(
-			'java',
-			'com.amazonaws.services.opsworks.model.DeploymentCommand'
-		).withName(
-			'execute_recipes'
-		);
+		var deploymentCommand = CreateAWSObject( 'services.opsworks.model.DeploymentCommand' )
+			.withName(
+				'execute_recipes'
+			);
 
 		deploymentCommand.setArgs( 
 			{
@@ -102,17 +91,12 @@ component accessors=true extends='aws' {
 	) {
 		writedump( arguments );
 
-		var deploymentRequest = CreateObject(
-			'java',
-			'com.amazonaws.services.opsworks.model.CreateDeploymentRequest'
-		).init();
+		var deploymentRequest = CreateAWSObject( 'services.opsworks.model.CreateDeploymentRequest' ).init();
 
-		var deploymentCommand = CreateObject(
-			'java',
-			'com.amazonaws.services.opsworks.model.DeploymentCommand'
-		).withName(
-			'deploy'
-		);
+		var deploymentCommand = CreateAWSObject( 'services.opsworks.model.DeploymentCommand' )
+			.withName(
+				'deploy'
+			);
 
 		deploymentRequest.setCommand(
 			deploymentCommand
@@ -126,10 +110,7 @@ component accessors=true extends='aws' {
 			deploymentRequest = deploymentRequest
 		);
 		
-		var describeAppsRequest = CreateObject(
-			'java',
-			'com.amazonaws.services.opsworks.model.DescribeAppsRequest'
-		).init();
+		var describeAppsRequest = CreateAWSObject( 'services.opsworks.model.DescribeAppsRequest' ).init();
 
 		describeAppsRequest.setStackId(
 			deploymentRequest.getStackId()

@@ -12,10 +12,7 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateObject(
-			'java',
-			'com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClient'
-		).init(
+		variables.myClient = CreateAWSObject( 'services.elasticloadbalancing.AmazonElasticLoadBalancingClient' ).init(
 			getCredentials()
 		);
 
@@ -32,13 +29,9 @@ component accessors=true extends='aws' {
 		required string name
 	) {
 
-		var describeLoadBalancerRequest = CreateObject(
-				'java',
-				'com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRequest'
-			)
-			.init(
-				[ arguments.name ]
-			);
+		var describeLoadBalancerRequest = CreateAWSObject( 'services.elasticloadbalancing.model.DescribeLoadBalancersRequest' ).init(
+			[ arguments.name ]
+		);
 
 		try {
 

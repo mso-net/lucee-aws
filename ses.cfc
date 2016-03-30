@@ -12,10 +12,7 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient'
-		).init(
+		variables.myClient = CreateAWSObject( 'services.simpleemail.AmazonSimpleEmailServiceClient' ).init(
 			getCredentials()
 		);
 
@@ -52,10 +49,7 @@ component accessors=true extends='aws' {
 		required string email
 	) {
 
-		var verify_email = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.VerifyEmailIdentityRequest'
-		)
+		var verify_email = CreateAWSObject( 'services.simpleemail.model.VerifyEmailIdentityRequest' )
 			.init()
 			.withEmailAddress( arguments.email );
 
@@ -70,10 +64,7 @@ component accessors=true extends='aws' {
 		required string email
 	) {
 
-		var delete_email = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.DeleteIdentityRequest'
-		)
+		var delete_email = CreateAWSObject( 'services.simpleemail.model.DeleteIdentityRequest' )
 			.init()
 			.withIdentity( arguments.email );
 
@@ -95,24 +86,15 @@ component accessors=true extends='aws' {
 		string bcc
 	) {
 
-		var email_subject = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.Content'
-		).init(
+		var email_subject = CreateAWSObject( 'services.simpleemail.model.Content' ).init(
 			arguments.subject
 		);
 
-		var email_body_content = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.Content'
-		).init(
+		var email_body_content = CreateAWSObject( 'services.simpleemail.model.Content' ).init(
 			arguments.body
 		);
 
-		var email_body = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.Body'
-		).init();
+		var email_body = CreateAWSObject( 'services.simpleemail.model.Body' ).init();
 
 		switch( arguments.format ) {
 			case 'html':
@@ -124,19 +106,13 @@ component accessors=true extends='aws' {
 				break;
 		}
 
-		var email_message = CreateObject( 
-			'java',
-			'com.amazonaws.services.simpleemail.model.Message'
-		).init(
+		var email_message = CreateAWSObject( 'services.simpleemail.model.Message' ).init(
 			email_subject,
 			email_body
 		);
 
 
-		var destination = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.Destination'
-		)
+		var destination = CreateAWSObject( 'services.simpleemail.model.Destination' )
 			.init()
 			.withToAddresses( arguments.to.ListToArray( ';' ) );
 
@@ -152,10 +128,7 @@ component accessors=true extends='aws' {
 			destination.setBccAddresses( arguments.bcc.ListToArray( ';' ) );
 		}
 
-		var send_email_request = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.SendEmailRequest'
-		)
+		var send_email_request = CreateAWSObject( 'services.simpleemail.model.SendEmailRequest' )
 			.init()
 			.withDestination( destination )
 			.withSource( arguments.from )
@@ -172,10 +145,7 @@ component accessors=true extends='aws' {
 		required string data
 	) {
 
-		var email_message = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.RawMessage'
-		).init(
+		var email_message = CreateAWSObject( 'services.simpleemail.model.RawMessage' ).init(
 			CreateObject(
 				'java',
 				'java.nio.charset.Charset'
@@ -192,10 +162,7 @@ component accessors=true extends='aws' {
 				)
 		);
 
-		var send_raw_email_request = CreateObject(
-			'java',
-			'com.amazonaws.services.simpleemail.model.SendRawEmailRequest'
-		)
+		var send_raw_email_request = CreateAWSObject( 'services.simpleemail.model.SendRawEmailRequest' )
 			.init()
 			.withRawMessage( email_message );
 

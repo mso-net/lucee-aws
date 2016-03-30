@@ -1,7 +1,7 @@
 component accessors=true extends='aws' {
 
 	property name='elb' type='elb' getter=false setter=false;
-	property name='myClient' type='com.amazonaws.services.route53.AmazonRoute53Client' getter=false setter=false;	
+	property name='myClient' type='services.route53.AmazonRoute53Client' getter=false setter=false;	
 
 	public route53 function init(
 		required string account,
@@ -16,10 +16,7 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.AmazonRoute53Client'
-		).init(
+		variables.myClient = CreateAWSObject( 'services.route53.AmazonRoute53Client' ).init(
 			getCredentials()
 		);
 
@@ -32,10 +29,7 @@ component accessors=true extends='aws' {
 
 		var target_domain = arguments.domain & '.';
 
-		var hosted_zones_request = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.ListHostedZonesByNameRequest'
-		)
+		var hosted_zones_request = CreateAWSObject( 'services.route53.model.ListHostedZonesByNameRequest' )
 			.init()
 			.withDNSName( target_domain )
 			.withMaxItems( 1 );
@@ -69,10 +63,7 @@ component accessors=true extends='aws' {
 	) {
 		var target_subdomain = arguments.subdomain & '.';
 
-		var resource_record_sets_request = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.ListResourceRecordSetsRequest'
-		)
+		var resource_record_sets_request = CreateAWSObject( 'services.route53.model.ListResourceRecordSetsRequest' )
 			.init( 
 				getHostedZoneID(
 					domain = arguments.subdomain.ListDeleteAt( 1 , '.' )
@@ -130,10 +121,7 @@ component accessors=true extends='aws' {
 		required string elb_name
 	) {
 
-		var resource_record_set = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.ResourceRecordSet'
-		).init(
+		var resource_record_set = CreateAWSObject( 'services.route53.model.ResourceRecordSet' ).init(
 			arguments.subdomain&'.',
 			'A'
 		);
@@ -144,10 +132,7 @@ component accessors=true extends='aws' {
 			name = arguments.elb_name
 		);
 
-		var alias_target = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.AliasTarget'
-		).init(
+		var alias_target = CreateAWSObject( 'services.route53.model.AliasTarget' ).init(
 			elbToLinkTo.CanonicalHostedZoneNameID,
 			elbToLinkTo.CanonicalHostedZoneName
 		);
@@ -155,10 +140,7 @@ component accessors=true extends='aws' {
 		alias_target.setEvaluateTargetHealth( false );
 		resource_record_set.setAliasTarget( alias_target );
 
-		var change = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.Change'
-		).init(
+		var change = CreateAWSObject( 'services.route53.model.Change' ).init(
 			'UPSERT',
 			resource_record_set
 		);
@@ -182,10 +164,7 @@ component accessors=true extends='aws' {
 			throw('Unable to find resource record for subdomain '&arguments.subdomain);
 		}
 
-		var change = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.Change'
-		).init(
+		var change = CreateAWSObject( 'services.route53.model.Change' ).init(
 			'DELETE',
 			resource_record_set
 		);
@@ -214,19 +193,13 @@ component accessors=true extends='aws' {
 			throw('Unable to find hosted zone for domain '&tl_domain);
 		}
 
-		var change_batch = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.ChangeBatch'
-		).init(
+		var change_batch = CreateAWSObject( 'services.route53.model.ChangeBatch' ).init(
 			[
 				arguments.change
 			]
 		);
 
-		var change_resource_record_sets_request = CreateObject(
-			'java',
-			'com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest'
-		).init(
+		var change_resource_record_sets_request = CreateAWSObject( 'services.route53.model.ChangeResourceRecordSetsRequest' ).init(
 			hosted_zone_id,
 			change_batch
 		);

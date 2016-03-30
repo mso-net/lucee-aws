@@ -17,10 +17,7 @@ component accessors=true extends='aws' {
 
 		variables.tables = {};
 
-		variables.myClient = CreateObject(
-			'java',
-			'com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient'
-		).init(
+		variables.myClient = CreateAWSObject( 'services.dynamodbv2.AmazonDynamoDBClient' ).init(
 			getCredentials()
 		);
 
@@ -30,10 +27,7 @@ component accessors=true extends='aws' {
 			setRegion( region = arguments.region );
 		}
 
-		variables.dynamodb = CreateObject(
-			'java',
-			'com.amazonaws.services.dynamodbv2.document.DynamoDB'
-		).init(
+		variables.dynamodb = CreateAWSObject( 'services.dynamodbv2.document.DynamoDB' ).init(
 			getMyClient()
 		);
 
@@ -105,10 +99,7 @@ component accessors=true extends='aws' {
 	}
 
 	public any function newItem() {
-		return CreateObject(
-			'java',
-			'com.amazonaws.services.dynamodbv2.document.Item'
-		).init();
+		return CreateAWSObject( 'services.dynamodbv2.document.Item' ).init();
 	}
 
 	public void function putItem(

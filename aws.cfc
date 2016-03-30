@@ -2,26 +2,39 @@ component accessors=true {
 
 	property name='credentials' type='com.amazonaws.auth.BasicAWSCredentials' getter=false setter=false;	
 	property name='regions' type='com.amazonaws.regions.Regions' getter=false setter=false;	
+	property name='jarPath' type='string' getter=true setter=false;
 
 	public aws function init(
 		required string account,
 		required string secret
 	) {
 
-		variables.credentials = CreateObject(
-			'java',
-			'com.amazonaws.auth.BasicAWSCredentials'
-		).init(
+		var my_path = GetComponentMetaData( this )
+							.path
+							.listToArray( '/' );
+		my_path[ my_path.len() ] = 'aws-java-sdk';
+
+		variables.jarPath = ( '/'&my_path.toList( '/' )&'/' )
+			.replace( ExpandPath( '.' ) , '' , 'one' );
+
+		variables.credentials = CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
 			arguments.account,
 			arguments.secret
 		);
 
-		variables.regions = CreateObject(
-			'java',
-			'com.amazonaws.regions.Regions'
-		);
+		variables.regions = CreateAWSObject( 'regions.Regions' );
 
 		return this;
+	}
+
+	private function CreateAWSObject(
+		required string name
+	) {
+		return CreateObject(
+			'java',
+			'com.amazonaws.'&arguments.name,
+			getJarPath()
+		);
 	}
 
 	private function getCredentials() {
