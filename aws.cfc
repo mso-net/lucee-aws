@@ -8,14 +8,10 @@ component accessors=true {
 		required string account,
 		required string secret
 	) {
-
-		var my_path = GetComponentMetaData( this )
+		variables.jarPath = '/'&GetComponentMetaData( this )
 							.path
-							.listToArray( '/' );
-		my_path[ my_path.len() ] = 'aws-java-sdk';
-
-		variables.jarPath = ( '/'&my_path.toList( '/' )&'/' )
-			.replace( ExpandPath( '.' ) , '' , 'one' );
+							.replace( expandpath( '/' ) , '' , 'one' )
+							.rereplace( '[-a-zA-Z]+\.cfc$' , 'aws-java-sdk' , 'one' );
 
 		variables.credentials = CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
 			arguments.account,
