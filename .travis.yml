@@ -3,7 +3,7 @@ sudo: required
 jdk:
 - oraclejdk8
 before_install:
-- echo "deb http://downloads.ortussolutions.com/debs/noarch /" > commandbox.list
+- echo "deb http://integration.stg.ortussolutions.com/artifacts/debs/noarc /" > commandbox.list
 - sudo mv commandbox.list /etc/apt/sources.list.d/commandbox.list
 - sudo apt-get update
 install:
