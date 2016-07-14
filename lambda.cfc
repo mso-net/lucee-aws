@@ -27,13 +27,14 @@ component accessors=true extends='aws' {
 
 	public any function invoke(
 		required string method,
-		required struct payload
+		required struct payload,
+		string invocationType = 'RequestResponse'
 	) {
 
 		var invoke_request = CreateAWSObject( 'services.lambda.model.InvokeRequest' )
 			.init()
 			.withFunctionName( arguments.method )
-			.withInvocationType( 'RequestResponse' )
+			.withInvocationType( arguments.invocationType )
 			.withPayload( 
 				SerializeJSON(
 					arguments.payload
