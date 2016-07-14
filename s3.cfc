@@ -154,10 +154,17 @@ component accessors=true extends='aws' {
 		);
 		
 		try {
-			return getMyClient().getObjectMetadata(
+
+			var metadata = getMyClient().getObjectMetadata(
 				variables.bucket,
 				full_key
 			);
+
+			return {
+				'length': metadata.getContentLength(),
+				'type': metadata.getContentType()
+			};
+			
 		} catch( com.amazonaws.services.s3.model.AmazonS3Exception ) {
 			throw( type = 's3.key.nonexistant' , detail = full_key );
 		}
