@@ -11,6 +11,12 @@ component extends='testbox.system.BaseSpec' {
 					bucket = application.aws_settings.s3_bucket,
 					basepath = 'unittest/'
 				);
+				service = new aws.s3(
+					account = application.aws_settings.aws_accountid,
+					secret = application.aws_settings.aws_secretkey,
+					bucket = application.aws_settings.s3_bucket,
+					basepath = 'unittest/'
+				);
 			});
 
 			it( 'extends aws' , function() {
@@ -95,13 +101,12 @@ component extends='testbox.system.BaseSpec' {
 						key = 'logo.png'
 					);
 
-					expect(
-						actual.getClass().getName()
-					).toBe(
-						'com.amazonaws.services.s3.model.ObjectMetadata'
-					);
+					expect( actual ).toBeStruct();
 
-					expect( actual.getContentType() ).toBe( 'image/png' );
+					expect( actual ).toBe( {
+						'length': 10930,
+						'type': 'image/png'
+					} );
 
 				});
 

@@ -143,7 +143,7 @@ component extends='testbox.system.BaseSpec' {
 
 
 				it( 'returns an empty structure for a nonexistant record' , function() {
-
+					
 					expect( function() {
 
 						service.getItem(
@@ -153,7 +153,7 @@ component extends='testbox.system.BaseSpec' {
 						);
 
 					}).toThrow(
-						'com.amazonaws.AmazonServiceException'
+						'com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException'
 					);
 
 				});
