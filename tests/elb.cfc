@@ -1,5 +1,3 @@
-stryver-test
-
 component extends='testbox.system.BaseSpec' {
 
 	function run() {
