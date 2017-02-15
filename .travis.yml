@@ -1,16 +1,11 @@
 language: java
 sudo: required
-jdk:
-- oraclejdk8
+
+services:
+  - docker
+
 before_install:
-- echo "deb http://downloads.ortussolutions.com/debs/noarch /" > commandbox.list
-- sudo mv commandbox.list /etc/apt/sources.list.d/commandbox.list
-- sudo apt-get update
-install:
-- sudo apt-get install -q -y --force-yes commandbox
-- box install
-before_script:
-- sudo rm -f /root/.CommandBox/lib/joda-time-*.jar
-- chmod +x test
+- docker build -t mso-net/lucee-aws .
+
 script:
-- "./test"
+- docker run -e "aws_accountid=$aws_accountid" -e "aws_secretkey=$aws_secretkey" -e "dynamodb_table=$dynamodb_table" -e "elb_name=$elb_name" -e "elb_region=$elb_region" -e "lambda_method=$lambda_method" -e "route53_tld=$route53_tld" -e "s3_bucket=$s3_bucket" -e "ses_from=$ses_from" -e "ses_to=$ses_to" mso-net/lucee-aws
