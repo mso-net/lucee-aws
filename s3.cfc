@@ -101,6 +101,55 @@ component accessors=true extends='aws' {
 		return array_of_keys;
 	}
 
+	public s3 function copyObject(
+		required string source,
+		required string destination
+	) {
+
+		// Does the source file exists?
+		getObjectMetadata(
+			key = arguments.source
+		);
+
+		// Is it trying to copy over itself?
+		if ( arguments.source == arguments.destination ) {
+			return this;
+		}
+
+		getMyClient().copyObject(
+			variables.bucket,
+			getKeyFromPath(
+				key = arguments.source
+			),
+			variables.bucket,
+			getKeyFromPath(
+				key = arguments.destination
+			)
+		);
+
+		return this;
+	}
+
+	public s3 function moveObject(
+		required string source,
+		required string destination
+	) {
+
+		copyObject(
+			source = arguments.source,
+			destination = arguments.destination
+		);
+
+		// Do I need to delete the original?
+		if ( arguments.source != arguments.destination ) {
+			deleteObject(
+				key = arguments.source
+			);
+		}
+
+		return this;
+	}
+
 	public s3 function makeDirectory(
 		required string key
 	) {
