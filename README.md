@@ -14,7 +14,17 @@ The contents of /aws-java-sdk are just the jar files from [http://sdk-for-java.a
 
 **Important** There are currently some conflicts between the AWS Java SDK and Lucee.  At present I would advise replacing the Lucee/CommandBox version of joda-time.jar with the version within the AWS Java SDK.  If you don't do this you will see issues especially with S3.  Additionally the javax-mailer jar conflicts with the one in Lucee, in this case you can delete the one from the AWS Java SDK - I don't think I'm actually making use of that yet.
 
-Again I am looking for a better solution here, but for now this provides a quick workaround.
+## Running unit tests
+
+The unit tests within lucee-aws may be run using Docker.  To do so you will need to configure various environment variables with your own values - setting up this environment is not something I have scripts for at present though.
+
+It can be built and run by executing the following commands.
+
+```
+docker build -t mso-net/lucee-aws .
+docker run -e "aws_accountid=$aws_accountid" -e "aws_secretkey=$aws_secretkey" -e "dynamodb_table=$dynamodb_table" -e "elb_name=$elb_name" -e "elb_region=$elb_region" -e "lambda_method=$lambda_method" -e "route53_tld=$route53_tld" -e "s3_bucket=$s3_bucket" -e "ses_from=$ses_from" -e "ses_to=$ses_to" mso-net/lucee-aws
+```
+
 
 ## Usage
 
