@@ -90,12 +90,6 @@ component extends='testbox.system.BaseSpec' {
 
 			describe( 'getObjectMetadata()' , function() {
 
-				beforeEach( function() {
-
-					makePublic( service , 'getObjectMetadata' , 'getObjectMetadata' );
-
-				});
-
 				it( 'returns metadata for logo.png' , function() {
 					actual = service.getObjectMetadata( 
 						key = 'logo.png'

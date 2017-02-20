@@ -195,7 +195,7 @@ component accessors=true extends='aws' {
 		return this;
 	}
 
-	private any function getObjectMetadata(
+	public struct function getObjectMetadata(
 		required string key
 	) {
 		var full_key = getKeyFromPath(
