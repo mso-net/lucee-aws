@@ -225,7 +225,7 @@ component accessors=true extends='aws' {
 		return variables.basepath&arguments.key;
 	}
 
-	public struct function getObject(
+	public function getSourceObject(
 		required string key
 	) {
 		var full_key = getKeyFromPath(
@@ -240,6 +240,16 @@ component accessors=true extends='aws' {
 		} catch( com.amazonaws.services.s3.model.AmazonS3Exception ) {
 			throw( type = 's3.key.nonexistant' , detail = full_key );
 		}
+
+		return object;
+	}
+
+	public struct function getObject(
+		required string key
+	) {
+		var object = getSourceObject(
+			key = arguments.key
+		);
 
 		var metadata = object.getObjectMetadata();
 
