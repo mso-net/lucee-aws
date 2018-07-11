@@ -1,6 +1,6 @@
 component accessors=true {
 
-	property name='credentials' type='com.amazonaws.auth.BasicAWSCredentials' getter=false setter=false;	
+	property name='credentials' type='com.amazonaws.auth.AWSCredentialsProvider' getter=false setter=false;	
 	property name='regions' type='com.amazonaws.regions.Regions' getter=false setter=false;
 
 	public aws function init(
@@ -16,10 +16,14 @@ component accessors=true {
 			&&
 			( arguments.secret ?: '' ).len() > 0
 		) {
-			variables.credentials = CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
+			var static_credentials = CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
 				arguments.account,
 				arguments.secret
 			);
+
+			variables.credentials = CreateAWSObject( 'auth.AWSStaticCredentialsProvider' )
+				.init( static_credentials );
+
 		} else {
 			variables.credentials = CreateAWSObject( 'auth.InstanceProfileCredentialsProvider' )
 				.init( false );

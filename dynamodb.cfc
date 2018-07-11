@@ -17,9 +17,10 @@ component accessors=true extends='aws' {
 
 		variables.tables = {};
 
-		variables.myClient = CreateAWSObject( 'services.dynamodbv2.AmazonDynamoDBClient' ).init(
-			getCredentials()
-		);
+		variables.myClient = CreateAWSObject( 'services.dynamodbv2.AmazonDynamoDBClientBuilder' )
+			.standard()
+			.withCredentials( getCredentials() )
+			.build();
 
 		if (
 			StructKeyExists( arguments , 'region' ) 

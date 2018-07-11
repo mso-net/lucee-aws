@@ -16,9 +16,10 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateAWSObject( 'services.route53.AmazonRoute53Client' ).init(
-			getCredentials()
-		);
+		variables.myClient = CreateAWSObject( 'services.route53.AmazonRoute53ClientBuilder' )
+			.standard()
+			.withCredentials( getCredentials() )
+			.build();
 
 		return this;
 	}

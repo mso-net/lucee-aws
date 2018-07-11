@@ -12,9 +12,10 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateAWSObject( 'services.elasticloadbalancing.AmazonElasticLoadBalancingClient' ).init(
-			getCredentials()
-		);
+		variables.myClient = CreateAWSObject( 'services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder' )
+			.standard()
+			.withCredentials( getCredentials() )
+			.build();
 
 		if (
 			StructKeyExists( arguments , 'region' ) 

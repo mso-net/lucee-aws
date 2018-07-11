@@ -12,9 +12,11 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateAWSObject( 'services.simpleemail.AmazonSimpleEmailServiceClient' ).init(
-			getCredentials()
-		);
+
+		variables.myClient = CreateAWSObject( 'services.simpleemail.AmazonSimpleEmailServiceClientBuilder' )
+			.standard()
+			.withCredentials( getCredentials() )
+			.build();
 
 		if (
 			StructKeyExists( arguments , 'region' ) 

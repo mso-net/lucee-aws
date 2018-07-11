@@ -12,9 +12,10 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateAWSObject( 'services.lambda.AWSLambdaClient' ).init(
-			getCredentials()
-		);
+		variables.myClient = CreateAWSObject( 'services.lambda.AWSLambdaClientBuilder' )
+			.standard()
+			.withCredentials( getCredentials() )
+			.build();
 
 		if (
 			StructKeyExists( arguments , 'region' ) 

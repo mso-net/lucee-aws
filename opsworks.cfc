@@ -13,9 +13,10 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.opsworksClient = CreateAWSObject( 'services.opsworks.AWSOpsWorksClient' ).init(
-			getCredentials()
-		);
+		variables.myClient = CreateAWSObject( 'services.opsworks.AWSOpsWorksClientBuilder' )
+			.standard()
+			.withCredentials( getCredentials() )
+			.build();
 
 		return this;
 	}
