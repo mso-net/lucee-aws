@@ -77,7 +77,6 @@ component accessors=true {
 	}
 
 	private function getRegions() {
-		dump( variables.regions );
 		return variables.regions;
 	}
 

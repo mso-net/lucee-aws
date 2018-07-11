@@ -90,8 +90,6 @@ component accessors=true extends='aws' {
 		required string stack,
 		required string app
 	) {
-		writedump( arguments );
-
 		var deploymentRequest = CreateAWSObject( 'services.opsworks.model.CreateDeploymentRequest' ).init();
 
 		var deploymentCommand = CreateAWSObject( 'services.opsworks.model.DeploymentCommand' )
