@@ -4,13 +4,28 @@ component accessors=true {
 	property name='regions' type='com.amazonaws.regions.Regions' getter=false setter=false;
 
 	public aws function init(
-		required string account,
-		required string secret
+		string account,
+		string secret
 	) {
-		variables.credentials = CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
-			arguments.account,
-			arguments.secret
-		);
+		if ( 
+			IsDefined( 'arguments.account' )
+			&&
+			IsDefined( 'arguments.secret' )
+			&&
+			( arguments.account ?: '' ).len() > 0
+			&&
+			( arguments.secret ?: '' ).len() > 0
+		) {
+			variables.credentials = CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
+				arguments.account,
+				arguments.secret
+			);
+		} else {
+			variables.credentials = CreateAWSObject( 'auth.InstanceProfileCredentialsProvider' )
+				.init( false );
+		}
+
+
 		variables.regions = CreateAWSObject( 'regions.Regions' );
 		return this;
 	}

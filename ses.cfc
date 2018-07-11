@@ -3,8 +3,8 @@ component accessors=true extends='aws' {
 	property name='myClient' type='com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient' getter=false setter=false;	
 
 	public ses function init(
-		required string account,
-		required string secret,
+		string account,
+		string secret,
 		string region = 'eu-west-1'
 	) {
 

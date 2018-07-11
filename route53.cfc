@@ -4,8 +4,8 @@ component accessors=true extends='aws' {
 	property name='myClient' type='services.route53.AmazonRoute53Client' getter=false setter=false;	
 
 	public route53 function init(
-		required string account,
-		required string secret
+		string account,
+		string secret
 	) {
 
 		super.init(

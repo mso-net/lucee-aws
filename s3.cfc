@@ -7,8 +7,8 @@ component accessors=true extends='aws' {
 
 
 	public s3 function init(
-		required string account,
-		required string secret,
+		string account,
+		string secret,
 		required string bucket,
 		string basepath = ''
 	) {
@@ -17,9 +17,10 @@ component accessors=true extends='aws' {
 			argumentCollection = arguments
 		);
 
-		variables.myClient = CreateAWSObject( 'services.s3.AmazonS3Client' ).init(
-			getCredentials()
-		);
+		variables.myClient = CreateAWSObject( 'services.s3.AmazonS3ClientBuilder' )
+			.standard()
+			.withCredentials( getCredentials() )
+			.build();
 
 		variables.bucket = arguments.bucket;
 		variables.basepath = arguments.basepath;

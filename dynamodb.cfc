@@ -6,8 +6,8 @@ component accessors=true extends='aws' {
 	property name='tables' type='struct' getter=false setter=false;
 
 	public dynamodb function init(
-		required string account,
-		required string secret,
+		string account,
+		string secret,
 		string region
 	) {
 
