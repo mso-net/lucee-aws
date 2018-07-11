@@ -14,14 +14,9 @@ component accessors=true extends='aws' {
 
 		variables.myClient = CreateAWSObject( 'services.lambda.AWSLambdaClientBuilder' )
 			.standard()
+			.withRegion( arguments.region )
 			.withCredentials( getCredentials() )
 			.build();
-
-		if (
-			StructKeyExists( arguments , 'region' ) 
-		) {
-			setRegion( region = arguments.region );
-		}
 
 		return this;
 	}

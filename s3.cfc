@@ -9,6 +9,7 @@ component accessors=true extends='aws' {
 	public s3 function init(
 		string account,
 		string secret,
+		string region = 'eu-west-1',
 		required string bucket,
 		string basepath = ''
 	) {
@@ -19,6 +20,7 @@ component accessors=true extends='aws' {
 
 		variables.myClient = CreateAWSObject( 'services.s3.AmazonS3ClientBuilder' )
 			.standard()
+			.withRegion( arguments.region )
 			.withCredentials( getCredentials() )
 			.build();
 

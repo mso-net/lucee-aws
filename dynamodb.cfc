@@ -8,7 +8,7 @@ component accessors=true extends='aws' {
 	public dynamodb function init(
 		string account,
 		string secret,
-		string region
+		string region = 'eu-west-1'
 	) {
 
 		super.init(
@@ -19,14 +19,9 @@ component accessors=true extends='aws' {
 
 		variables.myClient = CreateAWSObject( 'services.dynamodbv2.AmazonDynamoDBClientBuilder' )
 			.standard()
+			.withRegion( arguments.region )
 			.withCredentials( getCredentials() )
 			.build();
-
-		if (
-			StructKeyExists( arguments , 'region' ) 
-		) {
-			setRegion( region = arguments.region );
-		}
 
 		variables.dynamodb = CreateAWSObject( 'services.dynamodbv2.document.DynamoDB' ).init(
 			getMyClient()

@@ -29,7 +29,6 @@ component accessors=true {
 				.init( false );
 		}
 
-
 		variables.regions = CreateAWSObject( 'regions.Regions' );
 		return this;
 	}
@@ -78,6 +77,7 @@ component accessors=true {
 	}
 
 	private function getRegions() {
+		dump( variables.regions );
 		return variables.regions;
 	}
 

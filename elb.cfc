@@ -5,7 +5,7 @@ component accessors=true extends='aws' {
 	public elb function init(
 		string account,
 		string secret,
-		string region
+		string region = 'eu-west-1'
 	) {
 
 		super.init(
@@ -14,15 +14,10 @@ component accessors=true extends='aws' {
 
 		variables.myClient = CreateAWSObject( 'services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder' )
 			.standard()
+			.withRegion( arguments.region )
 			.withCredentials( getCredentials() )
 			.build();
-
-		if (
-			StructKeyExists( arguments , 'region' ) 
-		) {
-			setRegion( region = arguments.region );
-		}
-
+			
 		return this;
 	}
 
