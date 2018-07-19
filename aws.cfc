@@ -7,27 +7,33 @@ component accessors=true {
 		string account,
 		string secret
 	) {
-		if ( 
-			IsDefined( 'arguments.account' )
-			&&
-			IsDefined( 'arguments.secret' )
-			&&
-			( arguments.account ?: '' ).len() > 0
-			&&
-			( arguments.secret ?: '' ).len() > 0
-		) {
-			var static_credentials = CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
-				arguments.account,
-				arguments.secret
+		var potential_credentials = [
+			CreateAWSObject( 'auth.InstanceProfileCredentialsProvider' )
+				.init( false )
+		];
+
+		if ( arguments.account.len() > 0 && arguments.secret.len() > 0 ) {
+			potential_credentials.add(
+				CreateAWSObject( 'auth.AWSStaticCredentialsProvider' )
+					.init( CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
+						arguments.account,
+						arguments.secret
+					) )
 			);
-
-			variables.credentials = CreateAWSObject( 'auth.AWSStaticCredentialsProvider' )
-				.init( static_credentials );
-
-		} else {
-			variables.credentials = CreateAWSObject( 'auth.InstanceProfileCredentialsProvider' )
-				.init( false );
 		}
+
+		var system = CreateObject( 'java' , 'java.lang.System' );
+		var environment = system.getenv();
+
+		if ( IsDefined( 'environment.AWS_PROFILE' ) && IsDefined( 'environment.AWS_CONFIG_FILE' ) ) {
+			potential_credentials.add(
+				CreateAWSObject( 'auth.profile.ProfileCredentialsProvider' )
+					.init( environment.AWS_CONFIG_FILE , environment.AWS_PROFILE )
+			);
+		}
+
+		variables.credentials = CreateAWSObject( 'auth.AWSCredentialsProviderChain' )
+			.init( potential_credentials );
 
 		variables.regions = CreateAWSObject( 'regions.Regions' );
 		return this;
