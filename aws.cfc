@@ -12,7 +12,12 @@ component accessors=true {
 				.init( false )
 		];
 
-		if ( arguments.account.len() > 0 && arguments.secret.len() > 0 ) {
+		if ( 
+			IsDefined( 'arguments.account' )
+			&& IsDefined( 'arguments.secret' )
+			&& arguments.account.len() > 0 
+			&& arguments.secret.len() > 0 
+		) {
 			potential_credentials.add(
 				CreateAWSObject( 'auth.AWSStaticCredentialsProvider' )
 					.init( CreateAWSObject( 'auth.BasicAWSCredentials' ).init(
